@@ -31,14 +31,14 @@ export function logoutApi(){
 //         }
 //     });
 // }
-// export function checkToken(){
-//     return request({
-//         url:'/login/checkToken',
-//         method:'get',
-//         params:{
-//         }
-//     });
-// }
+export function checkToken(){
+    return request({
+        url:'/employee/loginbytoken',
+        method:'post',
+        data:{
+        }
+    });
+}
 // export function loginOut(){
 //     return request({
 //         url:'/login/logout',

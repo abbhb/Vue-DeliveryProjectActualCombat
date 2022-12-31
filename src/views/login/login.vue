@@ -31,7 +31,8 @@
 
 <script>
 
-
+import {loginApi,checkToken} from "@/api/login";
+import router from "@/router";
 export default {
   name: "login",
   el: '#login-app',
@@ -67,13 +68,14 @@ export default {
     }
   },
   created() {
+    this.checkToken()
   },
   methods: {
     async handleLogin() {
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
           this.loading = true
-          let res = await loginApi(this.loginForm.username,this.password)
+          let res = await loginApi(this.loginForm.username,this.loginForm.password)
           if (String(res.code) === '1') {
             localStorage.setItem('userInfo',JSON.stringify(res.data))
             localStorage.setItem('token',res.data.token)
@@ -85,6 +87,16 @@ export default {
           }
         }
       })
+    },
+    async checkToken() {
+      const res = await checkToken()
+      if (String(res.code) === '1'){
+        localStorage.setItem('userInfo',JSON.stringify(res.data))
+        // localStorage.setItem('token',res.data.token)
+        router.push({name:'index'})
+      }else {
+        this.$message.error(res.msg)
+      }
     }
   }
 }

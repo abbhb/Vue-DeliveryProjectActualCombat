@@ -1,8 +1,8 @@
 import App from '../App.vue'
 import NotFound from "@/views/NotFound";
-import login from "@/views/login/login";
 import index from "@/views/index";
-
+import login from "@/views/login/login";
+import UserInfo from "@/views/user/UserInfo";
 export default [
 	{
 		path: '/',
@@ -45,14 +45,25 @@ export default [
 		name: 'index',
 		component: index,
 		meta:{
-			requireAuth: false,
+			requireAuth: true,
 			needrole:false
-		}
+		},
+		children: [
+			{
+				path: '/userinfo',
+				name: 'userinfo',
+				component: UserInfo,
+				meta:{
+					requireAuth: true,
+					needrole:false
+				}
+			},
+		]
 	},
 	{
 		path: '*',
 		name: '*',
-		component: login,
+		redirect: '/404',
 		meta:{
 			requireAuth: false,
 			needrole:false

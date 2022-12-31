@@ -102,7 +102,6 @@ export default {
     return {
       // 菜单配置
       menuData:[
-        // 有子菜单 字菜单不分组的
         {
           optionName: "我的主页",
           iconClassName: "el-icon-setting",
@@ -112,7 +111,7 @@ export default {
             {
               optionName: '个人信息',
               index: '1-1',
-              routerName: "UserInfoForAdmin"
+              routerName: "userinfo"
             },
             {
               optionName: '修改密码',
@@ -122,29 +121,39 @@ export default {
           ]
         },
         {
-          optionName: "课程管理",
+          optionName: "门店管理",
           iconClassName: "el-icon-setting",
           index: '2',
           disabled: false, // 是否禁用
           childList: [
             {
-              optionName: '编辑课程',
+              optionName: '管理门店',
               index: '2-1',
               routerName: "MDCourseForAdmin"
             },
             {
-              optionName: '课程表展示',
+              optionName: '员工管理',
               index: '2-2',
               routerName: "TimeTableForAdmin"
             },
             {
-              optionName: 'test2',
+              optionName: '分类管理',
               index: '2-3',
               routerName: "test2"
             },
             {
-              optionName: 'test3',
+              optionName: '菜品管理',
               index: '2-4',
+              routerName: "test3"
+            },
+            {
+              optionName: '套餐管理',
+              index: '2-5',
+              routerName: "test3"
+            },
+            {
+              optionName: '订单明细',
+              index: '2-6',
               routerName: "test3"
             }
           ]
@@ -152,11 +161,12 @@ export default {
 
       ],
       menuCollapse: false, //是否水平折叠收起菜单
-      defaultUnfoldedMenu: [(this.menuData)[0].index], // 默认展开第一项
+      defaultUnfoldedMenu: '1', // 默认展开第一项
       tags: [],
       userphoto:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       showPhotoMenu:false,
       name:'11',
+      userInfo:{},
     };
   },
   created() {
@@ -165,8 +175,13 @@ export default {
     ];
     this.menuCollapse = JSON.parse(localStorage.getItem("menuCollapse"));
     this.tags = JSON.parse(localStorage.getItem("tagsNavList")) || [];
-    this.name = sessionStorage.getItem("name");
-    this.userphoto = sessionStorage.getItem("userphoto");
+    const userInfo = window.localStorage.getItem('userInfo')
+    if (userInfo){
+      this.userInfo = JSON.parse(userInfo)
+    }
+
+    this.name = this.userInfo.name;
+
   },
   methods: {
     // 收取菜单按钮
