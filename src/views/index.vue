@@ -116,7 +116,7 @@ export default {
             {
               optionName: '修改密码',
               index: '1-4',
-              routerName: "ChangePasswordForAdmin"
+              routerName: "changepassword"
             }
           ]
         },
@@ -129,7 +129,7 @@ export default {
             {
               optionName: '管理门店',
               index: '2-1',
-              routerName: "MDCourseForAdmin"
+              routerName: "mendianguanli"
             },
             {
               optionName: '员工管理',

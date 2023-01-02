@@ -15,16 +15,19 @@ router.beforeEach((to, from, next) => {
 	console.log(to)
 	if (to.meta.requireAuth) { // 判断跳转的路由是否需要登录
 		if (localStorage.getItem('token')) { // vuex.state判断token是否存在,后台会校验是否过期
-			console.log(to.meta.roles)
-			console.log(sessionStorage.getItem("type"))
 			if (to.meta.needrole){
-				if(to.meta.roles.includes(sessionStorage.getItem("type"))){
+				console.log(to.meta.roles)
+				console.log(localStorage.getItem("type"))
+				var roles = to.meta.roles
+				var per = localStorage.getItem("type")
+				console.log(roles.includes(Number(per)))
+				if(roles.includes(Number(per))){
 
 					console.log("存在")
 					next()	//放行
 				}else{
-					router.push({path:"/404"})
-					// next({path:"/404"})	//跳到404页面
+					router.push({path:"/44"})
+					// next({path:"/404"}0)	//跳到404页面
 				}
 			}
 			next()	//放行

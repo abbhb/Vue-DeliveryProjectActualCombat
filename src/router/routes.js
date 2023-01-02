@@ -3,6 +3,8 @@ import NotFound from "@/views/NotFound";
 import index from "@/views/index";
 import login from "@/views/login/login";
 import UserInfo from "@/views/user/UserInfo";
+import ChangePassword from "@/views/user/ChangePassword";
+import mendianguanli from "@/views/mendian/mendianguanli";
 export default [
 	{
 		path: '/',
@@ -56,6 +58,25 @@ export default [
 				meta:{
 					requireAuth: true,
 					needrole:false
+				}
+			},
+			{
+				path: '/changepassword',
+				name: 'changepassword',
+				component: ChangePassword,
+				meta:{
+					requireAuth: true,
+					needrole:false
+				}
+			},
+			{
+				path: '/mendianguanli',
+				name: 'mendianguanli',
+				component: mendianguanli,
+				meta:{
+					requireAuth: true,
+					needrole:true,
+					roles:[1]
 				}
 			},
 		]

@@ -54,6 +54,7 @@ export default {
         newpassword: '',
         checkpassword: ''
       },
+      userInfo:{},
       passrules: {
         password: [
           {required: true, message: '请输入原密码', trigger: 'blur'}
@@ -93,6 +94,12 @@ export default {
       }
     }
   },
+  created() {
+    const userInfo = localStorage.getItem('userInfo')
+    if (userInfo){
+      this.userInfo = JSON.parse(userInfo)
+    }
+  },
   methods:{
     checkStrong(sValue) {
       var modes = 0;
@@ -117,11 +124,11 @@ export default {
     },
     async onSubmit() {
       var that = this
-      var id = sessionStorage.getItem("id");
+      var id = that.userInfo.id;
       console.log(id)
-      var i = new Number(id)
-      const data = await Api.changePassWord(i, sessionStorage.getItem("username"), that.passform.password, that.passform.newpassword, that.passform.checkpassword);
-      if (data.status==666){
+      var i = new String(id)
+      const data = await Api.changePassWord(i, that.userInfo.username, that.passform.password, that.passform.newpassword, that.passform.checkpassword);
+      if (String(data.code)==='1'){
         that.$message.success(data.msg);
         localStorage.clear();
         sessionStorage.clear();

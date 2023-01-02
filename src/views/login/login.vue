@@ -75,9 +75,10 @@ export default {
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
           this.loading = true
-          let res = await loginApi(this.loginForm.username,this.loginForm.password)
+          const res = await loginApi(this.loginForm.username,this.loginForm.password)
           if (String(res.code) === '1') {
             localStorage.setItem('userInfo',JSON.stringify(res.data))
+            localStorage.setItem("type",res.data.permissions)
             localStorage.setItem('token',res.data.token)
             router.push({name:'index'})
 
@@ -90,12 +91,17 @@ export default {
     },
     async checkToken() {
       const res = await checkToken()
+
       if (String(res.code) === '1'){
+        console.log("验证")
+
+        localStorage.setItem("type",res.data.permissions)
         localStorage.setItem('userInfo',JSON.stringify(res.data))
         // localStorage.setItem('token',res.data.token)
         router.push({name:'index'})
       }else {
-        this.$message.error(res.msg)
+        // this.$message.error(res.msg)
+        //此处就不提示token校验失败了，可能第一次本来就没有token
       }
     }
   }

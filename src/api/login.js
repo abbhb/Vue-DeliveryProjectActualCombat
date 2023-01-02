@@ -57,18 +57,20 @@ export function checkToken(){
 //         }
 //     });
 // }
-// export function updataforuser(name,age,gender,email){
-//     return request({
-//         url:'/updataforuser',
-//         method:'post',
-//         data:{
-//             name:name,
-//             age:age,
-//             gender:gender,
-//             email:email
-//         }
-//     });
-// }
+export function updataforuser(id,username,name,sex,idNumber,phone){
+    return request({
+        url:'/employee/updataforuser',
+        method:'post',
+        data:{
+            id:String(id),
+            username:String(username),
+            name:String(name),
+            sex:String(sex),
+            idNumber:String(idNumber),
+            phone:String(phone)
+        }
+    });
+}
 // export function getAllCourseInfo(z,banji){
 //     return request({
 //         url:'/course/courseinfo',
@@ -90,15 +92,30 @@ export function checkToken(){
 //     });
 // }
 //
-// export function getAllCourseInfoThisWeek(klassId){
-//     return request({
-//         url:'/course/thisweekcourseinfo',
-//         method:'get',
-//         params:{
-//             klassId:klassId
-//         }
-//     });
-// }
+export function getStoreList(pageNum,pageSize,name){
+    return request({
+        url:'/store/get',
+        method:'get',
+        params:{
+            pageNum:pageNum,
+            pageSize:pageSize,
+            name:name
+        }
+    });
+}
+
+export function enableAndDisableStore(userId,storeId,storeStatus){
+    return request({
+        url:'/store/updatastorestatus',
+        method:'post',
+        data:{
+            userId:userId,
+            storeId:storeId,
+            storeStatus:storeStatus
+        }
+    });
+}
+
 //
 // export function getStudentAllCourseInfoThisWeek(sid){
 //     return request({
@@ -110,15 +127,16 @@ export function checkToken(){
 //     });
 // }
 //
-// export function deleteCourseById(id){
-//     return request({
-//         url:'/course/deletecourseinfobyid',
-//         method:'post',
-//         data:{
-//             id:id
-//         }
-//     });
-// }
+export function deleteStore(userId,storeId){
+    return request({
+        url:'/store/deletestore',
+        method:'post',
+        data:{
+            userId:userId,
+            storeId:storeId
+        }
+    });
+}
 //
 // export function getMaxWeek(klassid){
 //     return request({
@@ -167,16 +185,41 @@ export function checkToken(){
 //     });
 // }
 //
-// export function changePassWord(id,username,password,newpassword,checknewpassword){
-//     return request({
-//         url:'/user/changepassword',
-//         method:'post',
-//         data:{
-//             id:id,
-//             username:username,
-//             password:password,
-//             newpassword:newpassword,
-//             checknewpassword:checknewpassword
-//         }
-//     });
-// }
+export function changePassWord(id,username,password,newpassword,checknewpassword){
+    return request({
+        url:'/employee/changepassword',
+        method:'post',
+        data:{
+            id:String(id),
+            username:String(username),
+            password:String(password),
+            newpassword:String(newpassword),
+            checknewpassword:String(checknewpassword)
+        }
+    });
+}
+export function addMenDian(userid,mendianname,mendianjianjie,mendianstate){
+    return request({
+        url:'/store/add',
+        method:'post',
+        data:{
+            userId:String(userid),
+            storeName:String(mendianname),
+            storeIntroduction:String(mendianjianjie),
+            storeStatus:String(mendianstate),
+        }
+    });
+}
+export function updataMenDian(userid,mendianid,mendianname,mendianjianjie,mendianstate){
+    return request({
+        url:'/store/updata',
+        method:'post',
+        data:{
+            userId:String(userid),
+            storeId:String(mendianid),
+            storeName:String(mendianname),
+            storeIntroduction:String(mendianjianjie),
+            storeStatus:String(mendianstate),
+        }
+    });
+}
