@@ -104,6 +104,18 @@ export function getStoreList(pageNum,pageSize,name){
     });
 }
 
+export function getMemberList(pageNum,pageSize,name){
+    return request({
+        url:'/employee/get',
+        method:'get',
+        params:{
+            pageNum:pageNum,
+            pageSize:pageSize,
+            name:name
+        }
+    });
+}
+
 export function enableAndDisableStore(userId,storeId,storeStatus){
     return request({
         url:'/store/updatastorestatus',
@@ -112,6 +124,20 @@ export function enableAndDisableStore(userId,storeId,storeStatus){
             userId:userId,
             storeId:storeId,
             storeStatus:storeStatus
+        }
+    });
+}
+
+
+
+export function enableAndDisableEmployee(userId,caozuoId,userStatus){
+    return request({
+        url:'/employee/updataemployeestatus',
+        method:'post',
+        data:{
+            userId:String(userId),
+            caozuoId:String(caozuoId),
+            userStatus:String(userStatus)
         }
     });
 }
@@ -137,6 +163,31 @@ export function deleteStore(userId,storeId){
         }
     });
 }
+
+export function deleteEmployee(userId,caozuoId){
+    return request({
+        url:'/employee/deleteemployee',
+        method:'post',
+        data:{
+            userId:userId,
+            caozuoId:caozuoId
+        }
+    });
+}
+
+//
+export function getStoreListOnlyIdWithName(){
+    return request({
+        url:'/store/getstorelistonlyidwithname',
+        method:'get',
+        params:{
+        }
+    });
+}
+
+
+
+
 //
 // export function getMaxWeek(klassid){
 //     return request({

@@ -79,6 +79,7 @@ export default {
           if (String(res.code) === '1') {
             localStorage.setItem('userInfo',JSON.stringify(res.data))
             localStorage.setItem("type",res.data.permissions)
+            localStorage.setItem('userid',String(res.data.id))
             localStorage.setItem('token',res.data.token)
             router.push({name:'index'})
 
@@ -97,6 +98,7 @@ export default {
 
         localStorage.setItem("type",res.data.permissions)
         localStorage.setItem('userInfo',JSON.stringify(res.data))
+        localStorage.setItem('userid',String(res.data.id))
         // localStorage.setItem('token',res.data.token)
         router.push({name:'index'})
       }else {

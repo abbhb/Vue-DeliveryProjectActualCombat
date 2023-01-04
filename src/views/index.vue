@@ -134,7 +134,7 @@ export default {
             {
               optionName: '员工管理',
               index: '2-2',
-              routerName: "TimeTableForAdmin"
+              routerName: "memberguanli"
             },
             {
               optionName: '分类管理',

@@ -5,6 +5,7 @@ import login from "@/views/login/login";
 import UserInfo from "@/views/user/UserInfo";
 import ChangePassword from "@/views/user/ChangePassword";
 import mendianguanli from "@/views/mendian/mendianguanli";
+import memberguanli from "@/views/member/memberguanli";
 export default [
 	{
 		path: '/',
@@ -73,6 +74,16 @@ export default [
 				path: '/mendianguanli',
 				name: 'mendianguanli',
 				component: mendianguanli,
+				meta:{
+					requireAuth: true,
+					needrole:true,
+					roles:[1]
+				}
+			},
+			{
+				path: '/memberguanli',
+				name: 'memberguanli',
+				component: memberguanli,
 				meta:{
 					requireAuth: true,
 					needrole:true,
