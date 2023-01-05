@@ -274,3 +274,38 @@ export function updataMenDian(userid,mendianid,mendianname,mendianjianjie,mendia
         }
     });
 }
+
+export function addmember(data){//不用传入操作者id了,加在header中了
+    return request({
+        url:'/employee/add',
+        method:'post',
+        data:{
+            name:String(data.name),
+            username:String(data.username),
+            phone:String(data.phone),
+            idNumber:String(data.idNumber),
+            status:String(data.status),
+            permissions:data.permissions,
+            storeId:data.storeId,
+            sex:String(data.sex),
+            password:String(data.password),//初始密码
+        },
+    });
+}
+export function updataMember(data,userid){
+    return request({
+        url:'/employee/updataemployee',
+        method:'post',
+        data:{
+            userid:String(userid),
+            name:String(data.name),
+            username:String(data.username),
+            phone:String(data.phone),
+            idNumber:String(data.idNumber),
+            status:String(data.status),
+            permissions:data.permissions,
+            storeId:data.storeId,
+            sex:String(data.sex)
+        },
+    });
+}

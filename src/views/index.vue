@@ -10,6 +10,9 @@
         ></el-button>
       </div>
       <div class="right" style="display: flex;flex-direction: row;align-items: center;">
+        <div style="margin-right: 30px;font-size: 12px;color: rgba(255,255,255,0.78)">
+          <el-link @click.native="setIsNeedZoom">显示异常?点击修复视图</el-link>
+        </div>
         <div class="warp" style="margin-right: auto;">
           <el-dropdown>
                 <span class="el-dropdown-link">
@@ -22,7 +25,6 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-
       </div>
     </header>
     <section class="section">
@@ -268,6 +270,10 @@ export default {
         }
       });
     },
+    setIsNeedZoom(){
+      this.$globl.isNeedZoom = true;
+      document.body.style.zoom = 0.9
+    },
     async onLogOut() {
       const data = await Api.loginOut()
       console.log(data)
@@ -347,7 +353,7 @@ export default {
           display: flex;
           align-items: center;
           box-sizing: border-box;
-          z-index: 1;
+          z-index: 2000;
           position: fixed;
           .item {
             margin-right: 8px;

@@ -4,7 +4,7 @@
       <div class="tableBar">
         <el-input
             v-model="input"
-            placeholder="请输入员工名"
+            placeholder="请输入用户名称"
             style="width: 250px"
             clearable
             @clear="cleanQuery"
@@ -24,7 +24,7 @@
             @click="addMemberHandle('add')"
             :loading="dialogFormVisibles"
         >
-          添加员工
+          添加用户
         </el-button>
       </div>
       <el-table
@@ -36,7 +36,7 @@
       >
         <el-table-column
             prop="name"
-            label="员工名"
+            label="用户名称"
             align="center"
             width="120"
         ></el-table-column>
@@ -57,7 +57,7 @@
             align="center"
             width="180"
         ></el-table-column>
-        <el-table-column label="员工状态" align="center">
+        <el-table-column label="用户状态" align="center">
           <template slot-scope="scope">
             <span :style="String(scope.row.status) === '0'? 'color: red': 'color: #0c56dc'">
               {{ String(scope.row.status) === '0' ? '禁用' : '正常' }}
@@ -71,7 +71,7 @@
         >
           <template slot-scope="scope">
             <span>
-              {{ String(scope.row.permissions) === '1' ? '超级管理员' : String(scope.row.permissions) === '2' ? '门店管理' : String(scope.row.permissions) === '3' ? '员工' : null }}
+              {{ String(scope.row.permissions) === '1' ? '超级管理员' : String(scope.row.permissions) === '2' ? '门店管理' : String(scope.row.permissions) === '3' ? '用户' : null }}
             </span>
           </template>
         </el-table-column>
@@ -110,74 +110,106 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
       ></el-pagination>
-      <el-dialog :show-close="false"  :close-on-click-modal="false" :close-on-press-escape="false" :append-to-body="true" :title="addorbianji" :visible.sync="dialogFormVisibles" style="z-index: 123412">
-        <el-form :rules="rules" :model="form">
-<!--          <el-form-item label="员工Id" :label-width="formLabelWidth">-->
-<!--            <el-input v-model="form.id" autocomplete="off" disabled placeholder=""></el-input>-->
-<!--          </el-form-item>-->
-          <el-form-item label="用户名" :label-width="formLabelWidth">
-            <el-input v-model="form.username" autocomplete="off" placeholder="请输入员工用户名"></el-input>
-          </el-form-item>
-          <el-form-item  label="名称" :label-width="formLabelWidth">
-            <el-input v-model="form.name" autocomplete="off" placeholder="请输入员工名称"></el-input>
-          </el-form-item>
-          <el-form-item label="性别" :label-width="formLabelWidth">
-            <el-select v-model="form.sex" placeholder="请选择员工性别">
-              <el-option label="男" value="男"></el-option>
-              <el-option label="女" value="女"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item  label="手机号" :label-width="formLabelWidth">
-            <el-input v-model="form.phone" autocomplete="off" placeholder="请输入员工手机号"></el-input>
-          </el-form-item>
-          <el-form-item  label="证件号" :label-width="formLabelWidth">
-            <el-input v-model="form.idNumber" autocomplete="off" placeholder="请输入员工身份证号"></el-input>
-          </el-form-item>
+      <transition name="el-zoom-in-center">
+        <div v-show="show2" class="transition-box">
+          <el-dialog :show-close="false"  :close-on-click-modal="false" :close-on-press-escape="false" :append-to-body="true" :title="addorbianji" :visible.sync="dialogFormVisibles" style="z-index: 2065;">
+          <el-form :rules="rules" :model="form">
+            <!--          <el-form-item label="用户Id" :label-width="formLabelWidth">-->
+            <!--            <el-input v-model="form.id" autocomplete="off" disabled placeholder=""></el-input>-->
+            <!--          </el-form-item>-->
+            <div id="onecard1" class="onecard" >
+              <div style="display: flex">
+                <el-form-item label="用户名" :label-width="formLabelWidth">
+                  <el-input v-model="form.username" autocomplete="off" placeholder="请输入用户用户名"></el-input>
+                </el-form-item>
+                <span style="width: 50px"></span>
+                <el-form-item  label="用户名称" :label-width="formLabelWidth">
+                  <el-input v-model="form.name" autocomplete="off" placeholder="请输入用户名称"></el-input>
+                </el-form-item>
+                <span style="width: 50px"></span>
+                <el-form-item label="性别" :label-width="formLabelWidth">
+                  <el-select v-model="form.sex" placeholder="请选择用户性别">
+                    <el-option label="男" value="男"></el-option>
+                    <el-option label="女" value="女"></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
 
-          <el-form-item label="状态" :label-width="formLabelWidth">
-            <el-select v-model="form.status" placeholder="请选择员工状态">
-              <el-option label="正常" value="1"></el-option>
-              <el-option label="禁用" value="0"></el-option>
-            </el-select>
-          </el-form-item>
+              <div style="display: flex">
+                <el-form-item  label="手机号" :label-width="formLabelWidth">
+                  <el-input v-model="form.phone" autocomplete="off" placeholder="请输入用户手机号"></el-input>
+                </el-form-item>
+                <span style="width: 50px"></span>
+                <el-form-item  label="证件号" :label-width="formLabelWidth">
+                  <el-input v-model="form.idNumber" autocomplete="off" placeholder="请输入用户身份证号"></el-input>
+                </el-form-item>
 
-          <el-form-item label="权限" :label-width="formLabelWidth">
-            <el-select v-model="form.permissions" placeholder="请选择员工权限">
-              <el-option label="超级管理员" value="1"></el-option>
-              <el-option label="门店管理" value="2"></el-option>
-              <el-option label="门店员工" value="3"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="绑定门店Id" :label-width="formLabelWidth">
-            <el-select v-model="form.storeId" filterable placeholder="请选择绑定门店Id">
-              <el-option
-                  v-for="item in storeoptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
 
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormFButton" style="margin-right: 10px">取  消</el-button>
-          <span v-if="addoredit==='add'">
+                <span style="width: 50px"></span>
+                <el-form-item v-if="isNeedPasswordInput" label="初始密码" :label-width="formLabelWidth">
+                  <el-input v-model="form.password" autocomplete="off" placeholder="请输入初始密码"></el-input>
+                </el-form-item>
+              </div>
+            </div>
+            <div class="onecard" style="margin-bottom: 0px">
+              <div style="display: flex">
+                <el-form-item label="状态" :label-width="formLabelWidth">
+                  <el-select v-model="form.status" placeholder="请选择用户状态">
+                    <el-option label="正常" value="1"></el-option>
+                    <el-option label="禁用" value="0"></el-option>
+                  </el-select>
+                </el-form-item>
+                <span style="width: 50px"></span>
+                <el-form-item label="权限" :label-width="formLabelWidth">
+                  <el-select v-model="form.permissions" placeholder="请选择用户权限" @change="permissionsChange">
+                    <el-option label="超级管理员" value="1"></el-option>
+                    <el-option label="门店管理" value="2"></el-option>
+                    <el-option label="门店用户" value="3"></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+
+
+
+
+              <div>
+                <el-form-item label="绑定门店Id" :label-width="formLabelWidth">
+                  <el-select v-model="form.storeId" filterable placeholder="请选择绑定门店Id">
+                    <el-option
+                        v-for="item in storeoptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                  </el-select>
+                  <span style="width: 50px"></span>
+                  <span style="font-family: 'Leelawadee UI Semilight';font-size: 12px;margin-left: 10px ">
+                      注:权限为门店管理或者用户必须绑定此项，否则无法成功提交
+                  </span>
+
+                </el-form-item>
+              </div>
+            </div>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormFButton" style="margin-right: 10px">取  消</el-button>
+            <span v-if="addoredit==='add'">
             <el-button type="warning" plain @click="dialogFormTANDButton" :disabled="form.name===''||form.permissions===''||form.sex===''||form.idNumber===''||form.phone===''||form.status===''||form.username===''" :loading="dialogFormButtonLoading">添加并继续添加</el-button>
             <el-button type="primary" @click="dialogFormTButton" :disabled="form.name===''||form.permissions===''||form.sex===''||form.idNumber===''||form.phone===''||form.status===''||form.username===''" :loading="dialogFormButtonLoading">确  定</el-button>
           </span>
-          <span v-else-if="addoredit==='edit'">
+            <span v-else-if="addoredit==='edit'">
             <el-button type="primary" @click="dialogFormUpdataButton" :disabled="form.name===''||form.permissions===''||form.sex===''||form.idNumber===''||form.phone===''||form.status===''||form.username===''" :loading="dialogFormButtonLoading">更  新</el-button>
           </span>
+          </div>
+        </el-dialog>
         </div>
-      </el-dialog>
-    </div>
+      </transition>
+          </div>
   </div>
 </template>
 
 <script>
 import * as Api from "@/api/login";
-
 
 export default {
   name: "memberguanli",
@@ -193,7 +225,7 @@ export default {
       addoredit:'add',//默认是编辑模式
       tableData : [],
       tableloading:true,
-      userid : '',//当前员工id
+      userid : '',//当前用户id
       userstatus : '',
       token:'',
       storeoptions:[{
@@ -203,7 +235,8 @@ export default {
       userInfo:{},
       isNeedUpdata:false,
       dialogFormVisibles:false,
-      addorbianji:'添加员工',
+      isNeedPasswordInput:false,
+      addorbianji:'添加用户',
       form:{
         name:'',
         username:'',
@@ -213,11 +246,12 @@ export default {
         permissions:'',
         storeId:'',
         sex:'',
+        password:'123456',
       },
       dialogFormButtonLoading:false,
       rules: {
         name: [
-          { required: true, message: '请输入员工名', trigger: 'blur' },
+          { required: true, message: '请输入用户名', trigger: 'blur' },
         ]
       },
     }
@@ -230,7 +264,7 @@ export default {
     const userInfo = window.localStorage.getItem('userInfo')
     if (userInfo){
       if (this.userInfo.permissions===1){
-        //获取员工列表数据
+        //获取用户列表数据
         this.tableloading = true
 
         this.init()
@@ -245,6 +279,7 @@ export default {
 
   },
   mounted() {
+
   },
   methods: {
     async init () {
@@ -293,17 +328,19 @@ export default {
       // this.storeoptions = []//门店选择器，请求返回
 
       if (st === 'add'){
-        //添加员工，弹出表单
-        this.addorbianji = "添加员工"
+        //添加用户，弹出表单
+        this.addorbianji = "添加用户"
         this.addoredit = 'add'
         this.dialogFormVisibles = true
+        this.isNeedPasswordInput = true
         console.log("添加")
       } else {
-        //编辑员工，弹出表单,预先填充数据
+        //编辑用户，弹出表单,预先填充数据
+        this.isNeedPasswordInput = false
         this.addoredit = 'edit'
-        this.addorbianji = "编辑员工"
+        this.addorbianji = "编辑用户"
         this.form.name = st.name
-        this.userid = st.id//更新操作时带上当前的员工id
+        this.userid = st.id//更新操作时带上当前的用户id
         this.form.status = String(st.status)
         this.form.idNumber = String(st.idNumber)
         this.form.phone = String(st.phone)
@@ -323,7 +360,7 @@ export default {
       that.userid = row.id
       that.userstatus = row.status
       // console.log(row.status)
-      this.$confirm('确认调整该员工的状态?', '提示', {
+      this.$confirm('确认调整该用户的状态?', '提示', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
@@ -353,19 +390,30 @@ export default {
         that.$message.error(res.msg)
       }
     },
+    cleanform(){
+      this.form.status=''
+      this.form.name=''
+      this.form.username=''
+      this.form.sex = ''
+      this.form.phone=''
+      this.form.permissions=''
+      this.form.storeId=null
+      this.form.idNumber=''
+      this.userid=''
+      this.userstatus = ''
+    },
     async dialogFormTButton() {
       var that = this
       console.log(this.form)
       this.dialogFormButtonLoading = true
 
-      const res = await Api.addmember(that.userInfo.id,that.form.name,that.form.introduction,that.form.status)
+      const res = await Api.addmember(that.form)
       if (String(res.code)==='1'){
         that.dialogFormButtonLoading = false
         //清除form值,且关闭窗口，请求数据
         that.dialogFormVisibles = false
         that.$message.success(res.msg)
-        that.form.name = ''
-        that.form.introduction = ''
+        that.cleanform()
         this.handleQuery()
 
       }else {
@@ -377,14 +425,13 @@ export default {
     },
     async dialogFormTANDButton() {
       var that = this
-      const res = await Api.addmember(that.userInfo.id,that.form.name,that.form.introduction,that.form.status)
+      const res = await Api.addmember(that.form)
       that.dialogFormButtonLoading = true
       if (String(res.code)==='1'){
         that.dialogFormButtonLoading = false
         //清除form值,但不关闭窗口
         that.$message.success(res.msg)
-        that.form.name = ''
-        that.form.introduction = ''
+        that.cleanform()
         that.isNeedUpdata = true;
       }else {
         that.$message.error(res.msg)
@@ -392,17 +439,24 @@ export default {
       }
 
     },
+    permissionsChange(){
+      if (String(this.form.permissions)==='1'){
+        this.form.storeId=null
+      }else {
+        if (this.form.storeId===''||this.form.storeId==undefined||this.form.storeId===null){
+          this.form.storeId = undefined
+        }
+
+      }
+    },
     async dialogFormUpdataButton() {
       //更新
       this.dialogFormButtonLoading = true
-      const res = await Api.updatamember(String(this.userInfo.id), String(this.userid), String(this.form.name), String(this.form.introduction), String(this.form.status))
+      const res = await Api.updataMember(this.form,String(this.userid))
       if (String(res.code)==='1'){
         //更新成功
         this.$message.success(res.msg)
-        this.form.status=''
-        this.form.name=''
-        this.form.introduction=''
-        this.userid=''
+        this.cleanform()
         this.dialogFormVisibles = false
         this.dialogFormButtonLoading = false
         this.tableloading = true
@@ -415,8 +469,7 @@ export default {
     },
     dialogFormFButton(){
       this.dialogFormVisibles = false
-      this.form.name = ''
-      this.form.introduction = ''
+      this.cleanform()
       this.dialogFormButtonLoading = false
       if (this.isNeedUpdata){
         this.handleQuery()
@@ -645,5 +698,11 @@ export default {
 
 .cell{
   text-align: center;
+}
+.onecard {
+  border: #ece9e9 1px solid;
+  padding: 15px 15px 5px 15px;
+  border-radius: 10px;
+  margin-bottom: 5px;
 }
 </style>

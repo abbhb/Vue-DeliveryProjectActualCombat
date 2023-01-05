@@ -5,8 +5,17 @@
 </template>
 
 <script>
+
+
 export default {
-  created() {}
+  created() {
+
+    if (this.$globl.isNeedZoom){
+      if (document.body.style.zoom!=0.9){
+        document.body.style.zoom = 0.9
+      }
+    }
+  }
 };
 </script>
 
