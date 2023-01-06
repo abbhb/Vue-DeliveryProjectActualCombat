@@ -18,6 +18,15 @@ export function logoutApi(){
         method: 'post',
     })
 }
+export function deleteCategory(id) {
+    return request({
+        url:'/category/deletecategory',
+        method:'post',
+        data:{
+            id:id
+        }
+    })
+}
 
 
 
@@ -186,7 +195,43 @@ export function getStoreListOnlyIdWithName(){
 }
 
 
+export function addCategory(type,name,sort,storeId){
+    return request({
+        url:'/category/save',
+        method:'post',
+        data:{
+            type:type,
+            name:name,
+            sort:sort,
+            storeId:storeId
+        }
+    });
+}
 
+export function updataCategory(id,type,name,sort){
+    return request({
+        url:'/category/updata',
+        method:'post',
+        data:{
+            id:id,
+            type:type,
+            name:name,
+            sort:sort
+        }
+    });
+}
+
+export function getCategoryPage(pageNum,pageSize,storeIdvalue){
+    return request({
+        url:'/category/getcategorypage',
+        method:'post',
+        data:{
+            pageNum:pageNum,
+            pageSize:pageSize,
+            storeId:storeIdvalue
+        }
+    });
+}
 
 //
 // export function getMaxWeek(klassid){
@@ -292,6 +337,19 @@ export function addmember(data){//不用传入操作者id了,加在header中了
         },
     });
 }
+
+export function getStoreById(storeid){//不用传入操作者id了,加在header中了
+    return request({
+        url:'/store/getstorebyid',
+        method:'post',
+        data:{
+            storeid:String(storeid)
+        },
+    });
+}
+
+
+
 export function updataMember(data,userid){
     return request({
         url:'/employee/updataemployee',

@@ -98,6 +98,7 @@
 
 import * as Api from "@/api/login";
 
+
 export default {
   name:'index',
   data() {
@@ -141,7 +142,7 @@ export default {
             {
               optionName: '分类管理',
               index: '2-3',
-              routerName: "test2"
+              routerName: "category"
             },
             {
               optionName: '菜品管理',
@@ -275,10 +276,10 @@ export default {
       document.body.style.zoom = 0.9
     },
     async onLogOut() {
-      const data = await Api.loginOut()
+      const data = await Api.logoutApi()
       console.log(data)
 
-      if (data.status===902){
+      if (String(data.code)==='900'){
         this.$message.success(data.msg);
         sessionStorage.clear();
         localStorage.clear();
