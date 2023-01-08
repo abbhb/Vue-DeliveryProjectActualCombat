@@ -257,7 +257,7 @@ export function addDish(name,categoryId,price,image,description,status,sort,stor
             status:status,
             sort:sort,
             storeId:storeId,
-            dishFlavorResultList:dishFlavorResultList
+            dishFlavors:dishFlavorResultList
         }
     });
 }

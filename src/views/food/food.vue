@@ -62,6 +62,7 @@
         <el-table-column
             prop="name"
             label="菜品名称"
+            width="90"
         ></el-table-column>
         <el-table-column prop="image" label="图片" align="center">
           <template slot-scope="{ row }">
@@ -88,6 +89,13 @@
             <span style="margin-right: 10px;">{{ scope.row.status == '0' ? '停售' : '启售' }}</span>
           </template>
         </el-table-column>
+
+        <el-table-column label="排序">
+          <template slot-scope="scope">
+            <span style="margin-right: 10px;">{{scope.row.sort}}</span>
+          </template>
+        </el-table-column>
+
         <el-table-column
             prop="updateTime"
             label="最后操作时间"
@@ -187,6 +195,10 @@
                     placeholder="请设置菜品价格"
                 />
               </el-form-item>
+              <el-form-item label="排序：">
+                <el-input v-model="classData.sort"  type="number" placeholder="请输入排序" />
+              </el-form-item>
+              <el-tag type="success">默认按照排序从小到大排序,出现重复则按名称首字母从小到大</el-tag>
             </div>
             <el-form-item label="口味做法配置:">
               <el-form-item>
@@ -221,7 +233,7 @@
                               <el-input
                                   v-model="item.name"
                                   type="text"
-                                  style="width: 100%"
+                                  style="width: 100%;text-align: center;"
                                   placeholder="请输入口味"
                                   @focus="selectFlavor(true,index)"
                                   @blur="outSelect(false,index)"
@@ -229,16 +241,17 @@
                               />
                             </div>
                             <div v-show="item.showOption" class="flavorSelect">
-                          <span
-                              v-for="(it, ind) in dishFlavorsData"
-                              :key="ind"
-                              class="items"
-                              @click="checkOption(it,ind,index)"
-                          >{{ it.name }}</span>
+                              <span
+                                  v-for="(it, ind) in dishFlavorsData"
+                                  :key="ind"
+                                  class="items"
+                                  @click="checkOption(it,ind,index)"
+                              >{{ it.name }}
+                              </span>
                               <span
                                   v-if="dishFlavorsData == []"
-                                  class="none"
-                              >无数据</span>
+                                  class="none">无数据
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -303,6 +316,16 @@
                   ></i>
                 </el-upload>
               </el-form-item>
+              <el-form-item label="售卖状态：">
+                <el-select v-model="classData.status" placeholder="请选择">
+                  <el-option
+                      v-for="item in statusoptions"
+                      :key="item.label"
+                      :label="item.label"
+                      :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </div>
             <div class="address">
               <el-form-item
@@ -326,7 +349,7 @@
           >
                 <el-button
                     size="medium"
-                    @click="classData.dialogVisible = false"
+                    @click="cancel()"
                 >取 消</el-button>
                 <el-button
                     type="primary"
@@ -374,12 +397,21 @@ export default {
         dialogVisible: false,
         foodId: '',
         name: '',//菜品名
-        sort: '',
+        sort: '',//排序
+        status:'1',//默认上架
         categoryId:'',
         price:'',
         image:'',//url
         description:'',//描述
       },
+      statusoptions:[{
+        label:"上架",
+        value:"1"
+      },
+        {
+          label:"停售",
+          value:"0"
+        }],
       action:'',
       imageUrl: '',
       dishList: [],
@@ -455,7 +487,7 @@ export default {
   },
   methods: {
     async getCategoryIdoptions(){
-      const res = await Api.getCategoryLableValueList(String(this.storeIdvalue),String('1'));//菜品type为1
+      const res = await Api.getCategoryLableValueList(String(this.storeIdvalue),String('1'));//菜品type为1,在套餐页面只需要'1'改为'2'
       if (String(res.code)==='1'){
         console.log(res)
         this.categoryIdoptions = res.data
@@ -617,22 +649,18 @@ export default {
     addFlavore () {
       this.dishFlavors.push({'name': '', 'value': [], showOption: false}) // JSON.parse(JSON.stringify(this.dishFlavorsData))
     },
-
     // 按钮 - 删除口味
     delFlavor (ind) {
       this.dishFlavors.splice(ind, 1)
     },
-
     // 按钮 - 删除口味标签
     delFlavorLabel (index, ind) {
       this.dishFlavors[index].value.splice(ind, 1)
     },
-
     //口味位置记录
     flavorPosition (index) {
       this.index = index
     },
-
     // 添加口味标签
     keyDownHandle (val,index) {
       console.log('keyDownHandle----val',val)
@@ -643,13 +671,12 @@ export default {
         event.preventDefault()
         event.stopPropagation()
       }
-
       if (val.target.innerText.trim() != '') {
         this.dishFlavors[index].value.push(val.target.innerText)
         val.target.innerText = ''
       }
     },
-// 获取口味列表
+    // 获取口味列表
     getFlavorListHand () {
       // flavor flavorData
       this.dishFlavorsData = [
@@ -659,7 +686,18 @@ export default {
         {'name':'辣度','value':['不辣','微辣','中辣','重辣']}
       ]
     },
+    cleanform(){
+      this.classData.sort=''
+      this.classData.name=''
+      this.classData.image=''
+      this.imageUrl = ''
+      this.classData.price=''
+      this.classData.description=''
 
+      this.dishFlavors = []//清空口味
+
+      // this.classData.categoryId = ''
+    },
     selectFlavor(st,index){
       console.log('st',st)
       console.log('index',index)
@@ -678,8 +716,14 @@ export default {
         _this.dishFlavors.splice(index,1,obj)
       }, 200)
     },
-
-
+    inputHandle(val,index){
+      // this.selectFlavor(false,index)
+      console.log(val,index)
+    },
+    cancel(){
+      this.cleanform()
+      this.classData.dialogVisible = false
+    },
     selectHandle(val, key, ind){
       const arrDate = [...this.dishFlavors]
       arrDate[key] = JSON.parse(JSON.stringify(this.dishFlavorsData[ind]))
@@ -764,12 +808,27 @@ export default {
     async submitForm(st) {
       if (st === 'go') {
         //继续添加
+        //添加
+        console.log(this.dishFlavors)
+        const res = await Api.addDish(this.classData.name, this.classData.categoryId, this.classData.price, this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors)
+        if (String(res.code)==='1'){
+          console.log(res)
+          this.$message.success(res.msg)
+          this.cleanform()
+        }else {
+          this.$message.error(res.msg)
+        }
       } else {
         //添加
         console.log(this.dishFlavors)
-        const res = await Api.addDish(this.classData.name, this.classData.categoryId, this.classData.price, this.classData.image, this.classData.description, 1, this.classData.sort, this.storeIdvalue, this.dishFlavors)
+        const res = await Api.addDish(this.classData.name, this.classData.categoryId, this.classData.price, this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors)
         if (String(res.code)==='1'){
           console.log(res)
+          this.$message.success(res.msg)
+          this.cleanform()
+          this.dialogVisible = false
+        }else {
+          this.$message.error(res.msg)
         }
       }
     },
@@ -778,6 +837,48 @@ export default {
 </script>
 
 <style scoped>
+
+.selectInput {
+  position: relative;
+  width: 100%;
+  min-width: 100px;
+}
+.selectInput .flavorSelect {
+  position: absolute;
+  width: 100%;
+  padding: 0 5px;
+  border-radius: 3px;
+  border: solid 1px rgba(211, 210, 210, 0.82);
+  line-height: 30px;
+  text-align: center;
+  background: #fff;
+  top: 50px;
+  z-index: 99;
+
+}
+.selectInput .flavorSelect .items {
+
+  cursor: pointer;
+  display: inline-block;
+  width: 100%;
+  line-height: 35px;
+  border-bottom: solid 1px rgba(229, 228, 228, 0.91);
+  color: #666;
+  text-align: center;
+
+}
+.selectInput .flavorSelect .none {
+  font-size: 14px;
+
+
+}
+
+#food-add-app .uploadImg .el-form-item__label::before{
+  content: '*';
+  color: #F56C6C;
+  margin-right: 4px;
+}
+
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -924,6 +1025,8 @@ export default {
   display: flex;
   margin: 10px 0;
 }
+
+
 .flavorBox .flavor .cont .items .itTit {
   width: 150px;
   margin-right: 15px;
