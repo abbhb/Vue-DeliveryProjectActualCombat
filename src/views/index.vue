@@ -147,7 +147,7 @@ export default {
             {
               optionName: '菜品管理',
               index: '2-4',
-              routerName: "test3"
+              routerName: "food"
             },
             {
               optionName: '套餐管理',

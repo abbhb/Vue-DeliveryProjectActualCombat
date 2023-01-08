@@ -7,6 +7,7 @@ import ChangePassword from "@/views/user/ChangePassword";
 import mendianguanli from "@/views/mendian/mendianguanli";
 import memberguanli from "@/views/member/memberguanli";
 import category from "@/views/category/category";
+import food from "@/views/food/food";
 export default [
 	{
 		path: '/',
@@ -95,6 +96,16 @@ export default [
 				path: '/category',
 				name: 'category',
 				component: category,
+				meta:{
+					requireAuth: true,
+					needrole:true,
+					roles:[1,2,3]
+				}
+			},
+			{
+				path: '/food',
+				name: 'food',
+				component: food,
 				meta:{
 					requireAuth: true,
 					needrole:true,

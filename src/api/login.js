@@ -232,7 +232,35 @@ export function getCategoryPage(pageNum,pageSize,storeIdvalue){
         }
     });
 }
+export function getCategoryLableValueList(storeId,type){
+    return request({
+        url:'/category/getcategorylablevaluelist',
+        method:'post',
+        data:{
+            storeId:storeId,
+            type:type
+        }
+    });
+}
 
+
+export function addDish(name,categoryId,price,image,description,status,sort,storeId,dishFlavorResultList){
+    return request({
+        url:'/dish/add',
+        method:'post',
+        data:{
+            name:name,
+            categoryId:categoryId,
+            price:price,
+            image:image,
+            description:description,
+            status:status,
+            sort:sort,
+            storeId:storeId,
+            dishFlavorResultList:dishFlavorResultList
+        }
+    });
+}
 //
 // export function getMaxWeek(klassid){
 //     return request({
