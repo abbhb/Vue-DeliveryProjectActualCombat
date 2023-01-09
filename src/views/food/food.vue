@@ -28,6 +28,7 @@
             placeholder="请输入菜品名称"
             style="width: 250px"
             clearable
+            @clear="cleanQuery"
             @keyup.enter.native="handleQuery"
         >
           <i
@@ -53,6 +54,7 @@
           :data="tableData"
           stripe
           class="tableBox"
+          v-loading="foodtableloading"
           @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -67,8 +69,8 @@
         <el-table-column prop="image" label="图片" align="center">
           <template slot-scope="{ row }">
             <el-image style="width: auto; height: 40px; border:none;cursor: pointer;"
-                      :src="getImage(row.image)"
-                      :preview-src-list="[ `/common/download?name=${row.image}` ]" >
+                      :src="row.image"
+                      :preview-src-list="[ `${row.image}` ]" >
               <div slot="error" class="image-slot">
 /*                <img style="width: auto; height: 40px; border:none;" >*/
               </div>
@@ -78,19 +80,20 @@
         <el-table-column
             prop="categoryName"
             label="菜品分类"
+            width="120"
         ></el-table-column>
-        <el-table-column label="售价">
+        <el-table-column label="售价" width="120">
           <template slot-scope="scope">
             <span style="margin-right: 10px;">￥{{ scope.row.price/100 }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="售卖状态">
+        <el-table-column label="售卖状态" width="100">
           <template slot-scope="scope">
-            <span style="margin-right: 10px;">{{ scope.row.status == '0' ? '停售' : '启售' }}</span>
+            <span :style="String(scope.row.status) === '0'? 'color: red;margin-right: 10px;': 'color: #0c56dc;margin-right: 10px;'">{{ scope.row.status == '0' ? '停售' : '启售' }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="排序">
+        <el-table-column label="排序" width="60">
           <template slot-scope="scope">
             <span style="margin-right: 10px;">{{scope.row.sort}}</span>
           </template>
@@ -134,16 +137,25 @@
           </template>
         </el-table-column>
       </el-table>
+<!--      <el-pagination-->
+<!--          class="pageList"-->
+<!--          :page-sizes="[10, 20, 30, 40]"-->
+<!--          :page-size="pageSize"-->
+<!--          layout="total, sizes, prev, pager, next, jumper"-->
+<!--          :total="counts"-->
+<!--          @size-change="handleSizeChange"-->
+<!--          :current-page.sync="page"-->
+<!--          @current-change="handleCurrentChange"-->
+<!--      ></el-pagination>-->
       <el-pagination
-          class="pageList"
-          :page-sizes="[10, 20, 30, 40]"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="page"
+          :page-sizes="[5, 10, 20, 40]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="counts"
-          @size-change="handleSizeChange"
-          :current-page.sync="page"
-          @current-change="handleCurrentChange"
-      ></el-pagination>
+          :total="counts">
+      </el-pagination>
       <div>
         <el-dialog
             :title="classData.title"
@@ -381,10 +393,11 @@ export default {
       input: '',
       counts: 0,
       page: 1,
-      pageSize: 10,
+      pageSize: 5,
       tableData : [],
       dishState : '',
       checkList: [],
+      foodtableloading:false,
       userInfo: {},
       token:'',
       isAdmin:false,
@@ -517,12 +530,21 @@ export default {
       }
     },
     async init () {
+      this.foodtableloading = true
       this.getFlavorListHand()
       // const params = {
       //   page: this.page,
       //   pageSize: this.pageSize,
       //   name: this.input ? this.input : undefined
       // }
+      const res = await Api.getFoodList(this.page,this.pageSize,this.storeIdvalue,this.input ? this.input : undefined)
+      if (String(res.code)==='1'){
+        this.tableData = res.data.records || []
+        this.counts = Number(res.data.total)
+      }else {
+        this.$message.error(res.msg)
+      }
+      this.foodtableloading = false
 
       // await getDishPage(params).then(res => {
       //   if (String(res.code) === '1') {
@@ -539,6 +561,11 @@ export default {
     handleQuery() {
       this.page = 1;
       this.init();
+    },
+    cleanQuery(){
+      this.page = 1;
+      this.input = undefined
+      this.init()
     },
     // 添加
     addFoodtype (st) {
@@ -635,10 +662,15 @@ export default {
       this.checkList = checkArr
     },
     handleSizeChange (val) {
+      console.log(val)
       this.pageSize = val
       this.init()
     },
     handleCurrentChange (val) {
+      if (val>(Number(this.counts)/Number(this.pageSize))+1){
+        this.$message.info("最大页了")
+        return
+      }
       this.page = val
       this.init()
     },

@@ -125,6 +125,19 @@ export function getMemberList(pageNum,pageSize,name){
     });
 }
 
+export function getFoodList(pageNum,pageSize,storeId,name){
+    return request({
+        url:'/dish/get',
+        method:'get',
+        params:{
+            pageNum:pageNum,
+            pageSize:pageSize,
+            storeId:storeId,
+            name:name
+        }
+    });
+}
+
 export function enableAndDisableStore(userId,storeId,storeStatus){
     return request({
         url:'/store/updatastorestatus',

@@ -292,7 +292,7 @@ export default {
       console.log(res)
       if (String(res.code) === '1') {
           this.tableData = res.data.records || []
-          this.counts = res.data.total
+          this.counts = Number(res.data.total)
           this.tableloading = false
           this.isNeedUpdata = false
       }else {
