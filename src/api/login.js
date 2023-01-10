@@ -137,6 +137,29 @@ export function getFoodList(pageNum,pageSize,storeId,name){
         }
     });
 }
+export function dishStatusByStatus(params){
+    return request({
+        url:'/dish/put',
+        method:'put',
+        params
+    });
+}
+
+export function deleteDish(params){
+    return request({
+        url:'/dish/del',
+        method:'delete',
+        params
+    });
+}
+
+export function getDishFlavor(params){
+    return request({
+        url:'/dish/get/flavor',
+        method:'get',
+        params
+    });
+}
 
 export function enableAndDisableStore(userId,storeId,storeStatus){
     return request({
@@ -274,6 +297,27 @@ export function addDish(name,categoryId,price,image,description,status,sort,stor
         }
     });
 }
+export function editDish(name,categoryId,price,image,description,status,sort,storeId,dishFlavorResultList,id,version,flavorversion){
+    return request({
+        url:'/dish/edit',
+        method:'post',
+        data:{
+            id:id,
+            name:name,
+            categoryId:categoryId,
+            price:price,
+            image:image,
+            description:description,
+            status:status,
+            sort:sort,
+            storeId:storeId,
+            dishFlavors:dishFlavorResultList,
+            version:version,
+            flavorVersion:flavorversion,
+        }
+    });
+}
+
 //
 // export function getMaxWeek(klassid){
 //     return request({

@@ -84,7 +84,7 @@
         ></el-table-column>
         <el-table-column label="售价" width="120">
           <template slot-scope="scope">
-            <span style="margin-right: 10px;">￥{{ scope.row.price/100 }}</span>
+            <span style="margin-right: 10px;">￥{{ scope.row.price}}</span>
           </template>
         </el-table-column>
         <el-table-column label="售卖状态" width="100">
@@ -114,7 +114,7 @@
                 type="text"
                 size="small"
                 class="blueBug"
-                @click="addFoodtype(scope.row.id)"
+                @click="addFoodtype(scope.row)"
             >
               修改
             </el-button>
@@ -406,6 +406,7 @@ export default {
       storeIdvalue:'',//当前选择器的storeId
       categoryIdoptions:[],
       classData: {
+        id:'',//id
         title: '新建菜品',
         dialogVisible: false,
         foodId: '',
@@ -416,6 +417,8 @@ export default {
         price:'',
         image:'',//url
         description:'',//描述
+        version:'',//版本号
+        flavorversion:'',//口味版本号
       },
       statusoptions:[{
         label:"上架",
@@ -569,6 +572,7 @@ export default {
     },
     // 添加
     addFoodtype (st) {
+      console.log(st)
       if(this.storeIdvalue===''&&this.isAdmin){
         this.$message.info("请先选择门店!")
         return
@@ -578,43 +582,49 @@ export default {
       }
       this.getCategoryIdoptions()
       if (st === 'add'){
-        this.classData.title = '新增菜品'
-
         this.action = 'add'
-        this.classData.name = ''
-        this.classData.sort = ''
+        this.cleanform()
+        this.classData.title = '新增菜品'
         this.classData.dialogVisible = true
       } else {
-        this.classData.title = '编辑菜品'
-
         this.action = 'edit'
-        this.classData.name = ''
-        this.classData.sort = ''
+        this.classData.title = '编辑菜品'
+        this.classData.id = String(st.id)
+        this.classData.name = String(st.name)
+        this.classData.categoryId = String(st.categoryId)
+        this.classData.sort = String(st.sort)
+        this.classData.price = String(st.price)
+        this.classData.status = String(st.status)
+        this.classData.description = String(st.description)
+        this.classData.image = String(st.image)
+        this.imageUrl = String(st.image)
+        this.classData.version = String(st.version)
+
+        this.getFoodFlavor(st.id)
         this.classData.dialogVisible = true
       }
     },
 
     // 删除
     deleteHandle (type, id) {
+      let params = {}
       if (type === '批量' && id === null) {
         if (this.checkList.length === 0) {
           return this.$message.error('请选择删除对象')
         }
       }
+      params.id = String(type === '批量' ? this.checkList.join(',') : id)
       this.$confirm('确认删除该菜品, 是否继续?', '确定删除', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
-      }).then(() => {
-        // deleteDish(type === '批量' ? this.checkList.join(',') : id).then(res => {
-        //   if (res.code === 1) {
-        //     this.$message.success('删除成功！')
-        //     this.handleQuery()
-        //   } else {
-        //     this.$message.error(res.msg || '操作失败')
-        //   }
-        // }).catch(err => {
-        //   this.$message.error('请求出错了：' + err)
-        // })
+      }).then(async () => {
+        const res = await Api.deleteDish(params)
+        if (String(res.code)==='1'){
+          this.$message.success(res.msg)
+          this.handleQuery()
+        }else {
+          this.$message.error(res.msg || '操作失败')
+        }
       })
     },
 
@@ -630,25 +640,23 @@ export default {
         params.status = row
       } else {
         params.id = row.id
-        params.status = row.status ? '0' : '1'
+        params.status = String(row.status)==='1' ? '0' : '1'
       }
       this.dishState = params
       this.$confirm('确认更改该菜品状态?', '提示', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
-      }).then(() => {
+      }).then(async () => {
         // 起售停售---批量起售停售接口
-        // dishStatusByStatus(this.dishState).then(res => {
-        //   if (res.code === 1) {
-        //     this.$message.success('菜品状态已经更改成功！')
-        //     this.handleQuery()
-        //   } else {
-        //     this.$message.error(res.msg || '操作失败')
-        //   }
-        // }).catch(err => {
-        //   this.$message.error('请求出错了：' + err)
-        // })
+        const res = await Api.dishStatusByStatus(this.dishState)
+        if (String(res.code)==='1'){
+          this.$message.success(res.msg)
+          this.handleQuery()
+        }else {
+          this.$message.error('请求出错了：' + res.msg)
+        }
+
 
       })
     },
@@ -838,11 +846,11 @@ export default {
 
     },
     async submitForm(st) {
-      if (st === 'go') {
+      if ((st === 'go')&&this.action==='add') {
         //继续添加
         //添加
         console.log(this.dishFlavors)
-        const res = await Api.addDish(this.classData.name, this.classData.categoryId, this.classData.price, this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors)
+        const res = await Api.addDish(this.classData.name, this.classData.categoryId, String(this.classData.price), this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors)
         if (String(res.code)==='1'){
           console.log(res)
           this.$message.success(res.msg)
@@ -852,16 +860,54 @@ export default {
         }
       } else {
         //添加
-        console.log(this.dishFlavors)
-        const res = await Api.addDish(this.classData.name, this.classData.categoryId, this.classData.price, this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors)
-        if (String(res.code)==='1'){
-          console.log(res)
-          this.$message.success(res.msg)
-          this.cleanform()
-          this.dialogVisible = false
-        }else {
-          this.$message.error(res.msg)
+        if (this.action==='add'){
+          console.log(this.dishFlavors)
+          const res = await Api.addDish(this.classData.name, this.classData.categoryId, String(this.classData.price), this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors)
+          if (String(res.code)==='1'){
+            console.log(res)
+            this.$message.success(res.msg)
+            this.cleanform()
+            this.handleQuery()
+            this.dialogVisible = false
+          }else {
+            this.$message.error(res.msg)
+          }
+        }else if (this.action==='edit'){
+          console.log("edit")
+          const res = await Api.editDish(this.classData.name, this.classData.categoryId, String(this.classData.price), this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors,String(this.classData.id),String(this.classData.version),String(this.classData.flavorversion))
+          if (String(res.code)==='1'){
+            console.log(res)
+            this.$message.success(res.msg)
+            this.cleanform()
+            this.handleQuery()
+            this.dialogVisible = false
+          }else {
+            this.$message.error(res.msg)
+          }
+
         }
+
+      }
+    },
+    async getFoodFlavor(id) {
+      let params = {}
+      params.id = String(id)
+      const res = await Api.getDishFlavor(params)
+      if (String(res.code)==='1'){
+        this.dishFlavors = res.data
+        this.classData.flavorversion = res.data.version//口味版本号赋值
+        console.log(res.data.length)
+        for (var i=0;i<res.data.length;i++){
+
+          var str = res.data[i].value
+          console.log("0:"+str)
+          str = str.replace(/\[|]/g,'')
+          console.log("1:"+str)
+          this.dishFlavors[i].value = str.split(", ")
+          console.log("2:"+this.dishFlavors[i].value)
+        }
+
+        // this.dishFlavors.value = JSON.parse(res.data.value)
       }
     },
   }
