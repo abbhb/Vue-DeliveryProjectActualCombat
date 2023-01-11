@@ -89,7 +89,7 @@ export default [
 				meta:{
 					requireAuth: true,
 					needrole:true,
-					roles:[1]
+					roles:[1,2]
 				}
 			},
 			{

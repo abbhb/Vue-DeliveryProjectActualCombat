@@ -115,7 +115,6 @@ import * as Api from "@/api/login";
 
 export default {
   name: "mendianguanli",
-  el: '#mendian-app',
   data() {
 
     return {

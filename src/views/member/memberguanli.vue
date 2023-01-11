@@ -90,15 +90,16 @@
         >
           <template slot-scope="scope">
 
-            <el-button type="primary" icon="el-icon-edit" circle @click="addMemberHandle(scope.row)">
+            <el-button type="primary" icon="el-icon-edit" circle @click="addMemberHandle(scope.row)" :disabled="String(scope.row.isAllowOperation)==='0'">
             </el-button>
 
-            <el-button type="danger" icon="el-icon-delete" circle @click="deleteMemberHandle(scope.row)"></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle @click="deleteMemberHandle(scope.row)" :disabled="String(scope.row.isAllowOperation)==='0'"></el-button>
 
-            <el-button v-if="String(scope.row.status) === '0'" type="info" round @click="statusHandle(scope.row)">{{ String(scope.row.status) === '1' ? '禁用' : '启用' }}</el-button>
-            <el-button v-else  round @click="statusHandle(scope.row)">{{ String(scope.row.status) === '1' ? '禁用' : '启用' }}</el-button>
+            <el-button v-if="String(scope.row.status) === '0'" type="info" round @click="statusHandle(scope.row)" :disabled="String(scope.row.isAllowOperation)==='0'">{{ String(scope.row.status) === '1' ? '禁用' : '启用' }}</el-button>
+            <el-button v-else  round @click="statusHandle(scope.row)" :disabled="String(scope.row.isAllowOperation)==='0'">{{ String(scope.row.status) === '1' ? '禁用' : '启用' }}</el-button>
           </template>
         </el-table-column>
+
       </el-table>
       <el-pagination
           class="pageList"
@@ -162,9 +163,12 @@
                 <span style="width: 50px"></span>
                 <el-form-item label="权限" :label-width="formLabelWidth">
                   <el-select v-model="form.permissions" placeholder="请选择用户权限" @change="permissionsChange">
-                    <el-option label="超级管理员" value="1"></el-option>
-                    <el-option label="门店管理" value="2"></el-option>
-                    <el-option label="门店用户" value="3"></el-option>
+                    <el-option
+                        v-for="item in employeeoptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
                   </el-select>
                 </el-form-item>
               </div>
@@ -232,6 +236,10 @@ export default {
         value: '1',//门店ID字符串
         label: '某某店(Id:1)'
       }],
+      employeeoptions:[{
+        value: '3',//门店权限
+        label: '门店员工'
+      }],
       userInfo:{},
       isNeedUpdata:false,
       dialogFormVisibles:false,
@@ -266,9 +274,13 @@ export default {
       if (this.userInfo.permissions===1){
         //获取用户列表数据
         this.tableloading = true
-
         this.init()
-      }else {
+      }else if (this.userInfo.permissions===2){//此处后期加上门店id
+        //获取用户列表数据
+        this.tableloading = true
+        this.init()
+      }
+      else {
         this.$message.error("非超级管理员,禁止访问")
         window.location.href= '../../index.html'
       }
@@ -306,6 +318,10 @@ export default {
       // }).catch(err => {
       //   this.$message.error('请求出错了：' + err)
       // })
+      const employeeseletelist = await Api.getEmployeeListOnlyIdWithName()
+      if (String(employeeseletelist.code)==='1'){
+        this.employeeoptions = employeeseletelist.data
+      }
       const storeseletelist = await Api.getStoreListOnlyIdWithName()
       if (String(storeseletelist.code)==='1'){
         this.storeoptions = storeseletelist.data

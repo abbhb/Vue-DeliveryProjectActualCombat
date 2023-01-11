@@ -229,7 +229,14 @@ export function getStoreListOnlyIdWithName(){
         }
     });
 }
-
+export function getEmployeeListOnlyIdWithName(){
+    return request({
+        url:'/employee/getemployeelistonlyidwithname',
+        method:'get',
+        params:{
+        }
+    });
+}
 
 export function addCategory(type,name,sort,storeId){
     return request({

@@ -878,9 +878,9 @@ export default {
           if (String(res.code)==='1'){
             console.log(res)
             this.$message.success(res.msg)
-            this.cleanform()
+            this.cancel()
             this.handleQuery()
-            this.dialogVisible = false
+
           }else {
             this.$message.error(res.msg)
           }
