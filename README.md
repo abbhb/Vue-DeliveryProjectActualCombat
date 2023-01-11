@@ -1,5 +1,5 @@
-# vue.cli4.admin.template
-
+# 瑞吉外卖管理后台(Vue2+Router)
+``水平有限，随便写写(不规范,学习中)``
 ## Project setup
 ```
 npm install
