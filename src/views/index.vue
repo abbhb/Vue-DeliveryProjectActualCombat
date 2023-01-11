@@ -58,7 +58,13 @@
                     :index="item1.index"
                     :routerName="item1.routerName"
                     @click="onClickMenu(item1)"
-                >{{ item1.optionName }}</el-menu-item>
+                >
+<!--                  {{ item1.optionName }}-->
+                  <template slot="title">
+                    <i :class="item1.iconClassName"></i>
+                    <span slot="title">{{ !menuCollapse? item1.optionName : '' }}</span>
+                  </template>
+                </el-menu-item>
               </el-submenu>
               <el-menu-item
                   v-else
@@ -107,19 +113,21 @@ export default {
       menuData:[
         {
           optionName: "我的主页",
-          iconClassName: "el-icon-setting",
+          iconClassName: "el-icon-eleme",
           index: '1',
           disabled: false, // 是否禁用
           childList: [
             {
               optionName: '个人信息',
               index: '1-1',
-              routerName: "userinfo"
+              routerName: "userinfo",
+              iconClassName: "el-icon-user",
             },
             {
               optionName: '修改密码',
               index: '1-4',
-              routerName: "changepassword"
+              routerName: "changepassword",
+              iconClassName: "el-icon-lock"
             }
           ]
         },
@@ -132,32 +140,39 @@ export default {
             {
               optionName: '管理门店',
               index: '2-1',
-              routerName: "mendianguanli"
+              routerName: "mendianguanli",
+              iconClassName: "el-icon-s-shop"
             },
             {
               optionName: '员工管理',
               index: '2-2',
-              routerName: "memberguanli"
+              routerName: "memberguanli",
+              iconClassName: "el-icon-s-custom"
+
             },
             {
               optionName: '分类管理',
               index: '2-3',
-              routerName: "category"
+              routerName: "category",
+              iconClassName: "el-icon-folder"
             },
             {
               optionName: '菜品管理',
               index: '2-4',
-              routerName: "food"
+              routerName: "food",
+              iconClassName:"el-icon-dish"
             },
             {
               optionName: '套餐管理',
               index: '2-5',
-              routerName: "test3"
+              routerName: "combo",
+              iconClassName:"el-icon-goods"
             },
             {
               optionName: '订单明细',
               index: '2-6',
-              routerName: "test3"
+              routerName: "test3",
+              iconClassName: "el-icon-s-order"
             }
           ]
         }

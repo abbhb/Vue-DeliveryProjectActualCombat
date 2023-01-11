@@ -8,6 +8,7 @@ import mendianguanli from "@/views/mendian/mendianguanli";
 import memberguanli from "@/views/member/memberguanli";
 import category from "@/views/category/category";
 import food from "@/views/food/food";
+import combo from "@/views/combo/combo";
 export default [
 	{
 		path: '/',
@@ -106,6 +107,16 @@ export default [
 				path: '/food',
 				name: 'food',
 				component: food,
+				meta:{
+					requireAuth: true,
+					needrole:true,
+					roles:[1,2,3]
+				}
+			},
+			{
+				path: '/combo',
+				name: 'combo',
+				component: combo,
 				meta:{
 					requireAuth: true,
 					needrole:true,

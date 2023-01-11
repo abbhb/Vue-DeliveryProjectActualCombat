@@ -137,6 +137,20 @@ export function getFoodList(pageNum,pageSize,storeId,name){
         }
     });
 }
+
+export function getSetmealList(pageNum,pageSize,storeId,name){
+    return request({
+        url:'/setmeal/get',
+        method:'get',
+        params:{
+            pageNum:pageNum,
+            pageSize:pageSize,
+            storeId:storeId,
+            name:name
+        }
+    });
+}
+
 export function dishStatusByStatus(params){
     return request({
         url:'/dish/put',
