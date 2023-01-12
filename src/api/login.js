@@ -137,6 +137,18 @@ export function getFoodList(pageNum,pageSize,storeId,name){
         }
     });
 }
+export function queryDishList(categoryId,storeId,name){
+    return request({
+        url:'/dish/get/listbycategory',
+        method:'get',
+        params:{
+            categoryId:categoryId==undefined?undefined:categoryId,
+            storeId:storeId,
+            name:name==''?undefined:name
+        }
+    });
+}
+
 
 export function getSetmealList(pageNum,pageSize,storeId,name){
     return request({
@@ -264,6 +276,14 @@ export function addCategory(type,name,sort,storeId){
         }
     });
 }
+export function addSetmeal(data){
+    return request({
+        url:'/setmeal/add',
+        method:'post',
+        data:data
+    });
+}
+
 
 export function updataCategory(id,type,name,sort){
     return request({
@@ -318,7 +338,25 @@ export function addDish(name,categoryId,price,image,description,status,sort,stor
         }
     });
 }
-export function editDish(name,categoryId,price,image,description,status,sort,storeId,dishFlavorResultList,id,version,flavorversion){
+// export function addSetMeal(name,categoryId,price,image,description,status,sort,storeId,SetMealResultList){
+//     return request({
+//         url:'/setmeal/add',
+//         method:'post',
+//         data:{
+//             name:name,
+//             categoryId:categoryId,
+//             price:price,
+//             image:image,
+//             description:description,
+//             status:status,
+//             sort:sort,
+//             storeId:storeId,
+//             setmealResultList:SetMealResultList
+//         }
+//     });
+// }
+
+export function editDish(name,categoryId,price,image,description,status,sort,storeId,dishFlavorResultList,id,version){
     return request({
         url:'/dish/edit',
         method:'post',
@@ -334,7 +372,6 @@ export function editDish(name,categoryId,price,image,description,status,sort,sto
             storeId:storeId,
             dishFlavors:dishFlavorResultList,
             version:version,
-            flavorVersion:flavorversion,
         }
     });
 }

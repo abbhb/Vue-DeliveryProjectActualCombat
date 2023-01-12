@@ -137,16 +137,7 @@
           </template>
         </el-table-column>
       </el-table>
-<!--      <el-pagination-->
-<!--          class="pageList"-->
-<!--          :page-sizes="[10, 20, 30, 40]"-->
-<!--          :page-size="pageSize"-->
-<!--          layout="total, sizes, prev, pager, next, jumper"-->
-<!--          :total="counts"-->
-<!--          @size-change="handleSizeChange"-->
-<!--          :current-page.sync="page"-->
-<!--          @current-change="handleCurrentChange"-->
-<!--      ></el-pagination>-->
+
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -418,7 +409,6 @@ export default {
         image:'',//url
         description:'',//描述
         version:'',//版本号
-        flavorversion:'',//口味版本号
       },
       statusoptions:[{
         label:"上架",
@@ -874,7 +864,7 @@ export default {
           }
         }else if (this.action==='edit'){
           console.log("edit")
-          const res = await Api.editDish(this.classData.name, this.classData.categoryId, String(this.classData.price), this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors,String(this.classData.id),String(this.classData.version),String(this.classData.flavorversion))
+          const res = await Api.editDish(this.classData.name, this.classData.categoryId, String(this.classData.price), this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors,String(this.classData.id),String(this.classData.version))
           if (String(res.code)==='1'){
             console.log(res)
             this.$message.success(res.msg)
@@ -895,7 +885,6 @@ export default {
       const res = await Api.getDishFlavor(params)
       if (String(res.code)==='1'){
         this.dishFlavors = res.data
-        this.classData.flavorversion = res.data.version//口味版本号赋值
         console.log(res.data.length)
         for (var i=0;i<res.data.length;i++){
 
