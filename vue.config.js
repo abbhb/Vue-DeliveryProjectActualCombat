@@ -9,6 +9,8 @@ module.exports = {
                     '^/api':''//重写路径
                 }
             }
-        }
-    }
+        },
+    },
+    // publicPath:'./'
+
 }
