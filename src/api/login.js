@@ -171,6 +171,15 @@ export function dishStatusByStatus(params){
     });
 }
 
+export function setmealStatusByStatus(params){
+    return request({
+        url:'/setmeal/put',
+        method:'put',
+        params
+    });
+}
+
+
 export function deleteDish(params){
     return request({
         url:'/dish/del',
@@ -179,9 +188,24 @@ export function deleteDish(params){
     });
 }
 
+export function deleteSetmeal(params){
+    return request({
+        url:'/setmeal/del',
+        method:'delete',
+        params
+    });
+}
+
 export function getDishFlavor(params){
     return request({
         url:'/dish/get/flavor',
+        method:'get',
+        params
+    });
+}
+export function getSetmealDish(params){
+    return request({
+        url:'/setmeal/get/dish',
         method:'get',
         params
     });

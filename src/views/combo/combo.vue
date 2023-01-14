@@ -90,7 +90,7 @@
         </el-table-column>
         <el-table-column label="售卖状态" width="130">
           <template slot-scope="scope">
-            <span>{{ scope.row.status == '0' ? '停售' : '启售' }}</span>
+            <span :style="String(scope.row.status) === '0'? 'color: red;margin-right: 10px;': 'color: #0c56dc;margin-right: 10px;'">{{ scope.row.status == '0' ? '停售' : '启售' }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -252,6 +252,7 @@
               <el-upload
                   class="avatar-uploader"
                   action="http://localhost:8081/api/common/uploadimage"
+                  :headers="headerObj"
                   v-loading="isimageupload"
                   :show-file-list="false"
                   :on-success="handleAvatarSuccess"
@@ -444,6 +445,10 @@ export default {
 name: "combo.vue",
   data() {
     return {
+      headerObj: {
+        Authorization: localStorage.getItem('token'),
+        userid:localStorage.getItem('userid')
+      },
       input: '',
       dishvalue:'',
       keyInd:0,
@@ -654,6 +659,7 @@ name: "combo.vue",
     },
     addDishTableList(){
       this.dishTable = JSON.parse(JSON.stringify(this.dishCheckedList))
+      console.log(this.dishTable)
       this.dishTable.forEach((n) => {
         n.copies = 1
       })
@@ -744,25 +750,24 @@ name: "combo.vue",
     },
     // 删除
     deleteHandle (type, id) {
+      let params = {}
       if (type === '批量' && id === null) {
         if (this.checkList.length === 0) {
           return this.$message.error('请选择删除对象')
         }
       }
+      params.id = String(type === '批量' ? this.checkList.join(',') : id)
       this.$confirm('确定删除该套餐, 是否继续?', '确定删除', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
-      }).then(() => {
-        // deleteSetmeal(type === '批量' ? this.checkList.join(',') : id).then(res => {
-        //   if (res.code === 1) {
-        //     this.$message.success('删除成功！')
-        //     this.handleQuery()
-        //   } else {
-        //     this.$message.error(res.msg || '操作失败')
-        //   }
-        // }).catch(err => {
-        //   this.$message.error('请求出错了：' + err)
-        // })
+      }).then(async () => {
+        const res = await Api.deleteSetmeal(params)
+        if (String(res.code)==='1'){
+            this.$message.success('删除成功！')
+            this.handleQuery()
+        }else {
+          this.$message.error(res.msg || '操作失败')
+        }
       })
     },
 
@@ -778,25 +783,20 @@ name: "combo.vue",
         params.status = row
       } else {
         params.ids = row.id
-        params.status = row.status ? '0' : '1'
+        params.status = String(row.status)==='1' ? '0' : '1'
       }
       this.$confirm('确认更改该套餐状态?', '提示', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
-      }).then(() => {
-        // 起售停售---批量起售停售接口
-
-        // setmealStatusByStatus(params).then(res => {
-        //   if (res.code === 1) {
-        //     this.$message.success('套餐状态已经更改成功！')
-        //     this.handleQuery()
-        //   } else {
-        //     this.$message.error(res.msg || '操作失败')
-        //   }
-        // }).catch(err => {
-        //   this.$message.error('请求出错了：' + err)
-        // })
+      }).then(async () => {
+        const res = await Api.setmealStatusByStatus(params)
+        if (String(res.code)==='1'){
+          this.$message.success(res.msg)
+          this.handleQuery()
+        }else {
+          this.$message.error(res.msg || '操作失败')
+        }
       })
     },
 
@@ -874,13 +874,7 @@ name: "combo.vue",
           console.log(res);
           resolve(res);
         });
-        //compressAccurately有多个参数时传入对象
-        //imageConversion.compressAccurately(file, {
-        // size: 1024, //图片大小压缩到1024kb
-        // width:1280 //宽度压缩到1280
-        //}).then(res => {
-        //resolve(res)
-        //})
+
       });
     },
     // 添加
@@ -912,8 +906,8 @@ name: "combo.vue",
         this.classData.image = String(st.image)
         this.imageUrl = String(st.image)
         this.classData.version = String(st.version)
-
-        this.getFoodFlavor(st.id)
+        this.getSetmealDish(st.id)
+        // this.getFoodFlavor(st.id)
         this.classData.dialogVisible = true
       }
     },
@@ -957,6 +951,9 @@ name: "combo.vue",
           }
         }else if (this.action==='edit'){
           console.log("edit")
+          console.log(this.dishTable)
+          console.log(this.classData)
+          console.log(this.dishCheckList)
           // const res = await Api.editSetMeal(this.classData.name, this.classData.categoryId, String(this.classData.price), this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors,String(this.classData.id),String(this.classData.version))
           // if (String(res.code)==='1'){
           //   console.log(res)
@@ -981,6 +978,22 @@ name: "combo.vue",
       this.dishTable.splice(index, 1)
       this.dishCheckList.splice(index, 1)
     },
+    async getSetmealDish(id) {
+      let params = {}
+      params.id = id
+      const res = await Api.getSetmealDish(params)
+      if (String(res.code)==='1'){
+        let newArr = res.data;
+        newArr.forEach((n) => {
+          n.dishId = n.id
+          // n.dishCopies = 1
+          n.dishName = n.name
+        })
+        this.dishTable = newArr
+      }else {
+        this.$message.error(res.msg)
+      }
+    }
   }
 }
 </script>
