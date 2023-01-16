@@ -380,6 +380,15 @@ export function addDish(name,categoryId,price,image,description,status,sort,stor
 //     });
 // }
 
+
+export function editSetmeal(data){
+    return request({
+        url:'/setmeal/edit',
+        method:'post',
+        data
+    });
+}
+
 export function editDish(name,categoryId,price,image,description,status,sort,storeId,dishFlavorResultList,id,version){
     return request({
         url:'/dish/edit',

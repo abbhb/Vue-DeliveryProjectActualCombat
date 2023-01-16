@@ -658,11 +658,15 @@ name: "combo.vue",
       this.dish.dialogVisible = false
     },
     addDishTableList(){
-      this.dishTable = JSON.parse(JSON.stringify(this.dishCheckedList))
-      console.log(this.dishTable)
-      this.dishTable.forEach((n) => {
-        n.copies = 1
-      })
+      // this.dishTable = JSON.parse(JSON.stringify(this.dishCheckedList))
+      let dishcheckedl = JSON.parse(JSON.stringify(this.dishCheckedList));
+      console.log(dishcheckedl)
+      if(dishcheckedl!==undefined){  //必须加判断  不然会不识别forEach
+        dishcheckedl.forEach(n=>{
+          n.copies = 1
+          this.dishTable.push(n)
+        })
+      }
       this.dish.dialogVisible = false
       // 添加处理逻辑清空选中list
       this.dishCheckList = []
@@ -950,20 +954,28 @@ name: "combo.vue",
             this.$message.error(res.msg)
           }
         }else if (this.action==='edit'){
+          let data = {}
+          data.categoryId = this.classData.categoryId
+          data.description = this.classData.description
+          data.id = this.classData.id
+          data.image = this.classData.image
+          data.name = this.classData.name
+          data.price = this.classData.price
+          data.sort = this.classData.sort
+          data.status = this.classData.status
+          data.storeId = this.classData.storeId
+          data.version = this.classData.version
+          data.code = this.classData.code
+          data.dishResults = this.dishTable
           console.log("edit")
-          console.log(this.dishTable)
-          console.log(this.classData)
-          console.log(this.dishCheckList)
-          // const res = await Api.editSetMeal(this.classData.name, this.classData.categoryId, String(this.classData.price), this.classData.image, this.classData.description, String(this.classData.status), String(this.classData.sort), this.storeIdvalue, this.dishFlavors,String(this.classData.id),String(this.classData.version))
-          // if (String(res.code)==='1'){
-          //   console.log(res)
-          //   this.$message.success(res.msg)
-          //   this.cancel()
-          //   this.handleQuery()
-          //
-          // }else {
-          //   this.$message.error(res.msg)
-          // }
+          const res = await Api.editSetmeal(data)
+          if (String(res.code)==='1'){
+            this.$message.success(res.msg)
+              this.cancel()
+              this.handleQuery()
+          }else {
+            this.$message.error(res.msg)
+          }
 
         }
 
