@@ -240,17 +240,18 @@
                                   placeholder="请输入口味"
                                   @focus="selectFlavor(true,index)"
                                   @blur="outSelect(false,index)"
-                                  @input="inputHandle(index)"
                               />
                             </div>
                             <div v-show="item.showOption" class="flavorSelect">
-                              <span
+                              <el-button
+                                  type="primary" plain
                                   v-for="(it, ind) in dishFlavorsData"
                                   :key="ind"
                                   class="items"
+
                                   @click="checkOption(it,ind,index)"
                               >{{ it.name }}
-                              </span>
+                              </el-button>
                               <span
                                   v-if="dishFlavorsData == []"
                                   class="none">无数据
@@ -273,6 +274,7 @@
                               @focus="flavorPosition(index)"
                               @keydown.enter="(val)=>keyDownHandle(val,index)"
                           ></div>
+                          <!--                              :style="inputStyle"-->
                         </div>
                         <span
                             class="delFlavor delBut non"
@@ -298,13 +300,14 @@
                   prop="region"
                   class="uploadImg"
               >
+                <!--必须加header，不然后端会拦截-->
                 <el-upload
                     class="avatar-uploader"
                     action="http://localhost:8081/api/common/uploadimage"
+                    :headers="headerObj"
                     v-loading="isimageupload"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
-                    :on-change="onChange"
                     :before-upload="beforeUpload"
                     ref="upload"
                 >
@@ -381,6 +384,10 @@ export default {
   name: "food",
   data() {
     return {
+      headerObj: {
+        Authorization: localStorage.getItem('token'),
+        userid:localStorage.getItem('userid')
+      },
       input: '',
       counts: 0,
       page: 1,
@@ -422,6 +429,8 @@ export default {
       imageUrl: '',
       dishList: [],
       dishFlavorsData: [],
+      inputStyle  : {'flex':1},
+
       dishFlavors: [],//要传服务器的口味
       // 图片的base编码
       imgBase64: '',
@@ -473,6 +482,7 @@ export default {
     this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
     this.token = localStorage.getItem('token')
     const userInfo = window.localStorage.getItem('userInfo')
+
     if (userInfo){
       if (String(this.userInfo.permissions)==='1'){
         this.isAdmin = true
@@ -517,12 +527,20 @@ export default {
         this.storeIdoptions = data.data
         if (this.storeNamevalue===''){
           this.storeIdvalue = data.data[0].value
+
+          //set
+          if (sessionStorage.getItem("userLastStoreId")!==""){
+            this.storeIdvalue=sessionStorage.getItem("userLastStoreId")
+          }
+
           this.getStoreById()
           this.init()
         }
       }
     },
     async init () {
+      sessionStorage.setItem("userLastStoreId",this.storeIdvalue)
+
       this.foodtableloading = true
       this.getFlavorListHand()
       // const params = {
@@ -723,6 +741,7 @@ export default {
       this.imageUrl = ''
       this.classData.price=''
       this.classData.description=''
+      this.classData.categoryId=''
 
       this.dishFlavors = []//清空口味
 
@@ -746,10 +765,10 @@ export default {
         _this.dishFlavors.splice(index,1,obj)
       }, 200)
     },
-    inputHandle(val,index){
-      // this.selectFlavor(false,index)
-      console.log(val,index)
-    },
+    // inputHandle(val,index){
+    //   // this.selectFlavor(false,index)
+    //   // console.log(val,index)
+    // },
     cancel(){
       this.cleanform()
       this.classData.dialogVisible = false
@@ -790,32 +809,6 @@ export default {
         //resolve(res)
         //})
       });
-    },
-    async onChange(file) {
-      console.log("change:",file)
-      // if (file) {
-      //   const suffix = file.name.split('.')[1]
-      //   const size = file.size / 1024 / 1024 < 2
-      //   if (['png', 'jpeg', 'jpg'].indexOf(suffix) < 0) {
-      //     this.$message.error('上传图片只支持 png、jpeg、jpg 格式！')
-      //     this.$refs.upload.clearFiles()
-      //     return false
-      //   }
-      //   if (!size) {
-      //     this.$message.error('上传文件大小不能超过 2MB!')
-      //     return false
-      //   }
-      //   // 大于512k的图片则先压缩,暂时不压缩
-      //   // if (file.size > 512 * 1024 && file.type.includes('image/')) {
-      //   //   file = await this.compressor(file)
-      //   // }
-      //   // 添加水印
-      //   let img = await blobToImg(file)
-      //   let canvas =await convertImageToCanvas(img)
-      //   let blob = await watermark(canvas, "rg")
-      //   return blob
-      //
-      // }
     },
     handleAvatarSuccess (response, file, fileList) {//上传图片成功的回调
       console.log(file)
@@ -913,31 +906,26 @@ export default {
 .selectInput .flavorSelect {
   position: absolute;
   width: 100%;
-  padding: 0 5px;
+  padding: 0 10px;
   border-radius: 3px;
-  border: solid 1px rgba(211, 210, 210, 0.82);
+  border: solid 1px #807974;
   line-height: 30px;
   text-align: center;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.98);
   top: 50px;
   z-index: 99;
-
 }
 .selectInput .flavorSelect .items {
-
   cursor: pointer;
   display: inline-block;
   width: 100%;
-  line-height: 35px;
-  border-bottom: solid 1px rgba(229, 228, 228, 0.91);
-  color: #666;
-  text-align: center;
-
+  line-height: 15px;
+  /*border-bottom: solid 1px #a85151;*/
+  /*color: #383737;*/
+  /*padding: 1px 1px 1px 1px;*/
 }
 .selectInput .flavorSelect .none {
   font-size: 14px;
-
-
 }
 
 #food-add-app .uploadImg .el-form-item__label::before{

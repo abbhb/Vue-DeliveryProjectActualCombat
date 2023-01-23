@@ -709,6 +709,12 @@ name: "combo.vue",
         this.storeIdoptions = data.data
         if (this.storeNamevalue===''){
           this.storeIdvalue = data.data[0].value
+
+          //set
+          if (sessionStorage.getItem("userLastStoreId")!==""){
+            this.storeIdvalue=sessionStorage.getItem("userLastStoreId")
+          }
+
           this.storeId = data.data[0].value
           this.getStoreById()
           this.init()
@@ -721,6 +727,7 @@ name: "combo.vue",
       //   pageSize: this.pageSize,
       //   name: this.input ? this.input : undefined
       // }
+      sessionStorage.setItem("userLastStoreId",this.storeIdvalue)
       const res = await Api.getSetmealList(this.page,this.pageSize,this.storeIdvalue,this.input ? this.input : undefined);
       console.log(res)
       if (String(res.code)==='1'){

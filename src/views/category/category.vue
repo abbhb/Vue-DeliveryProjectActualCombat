@@ -236,12 +236,19 @@ export default {
         this.storeIdoptions = data.data
         if (this.storeNamevalue===''){
           this.storeIdvalue = data.data[0].value
+
+          //set
+          if (sessionStorage.getItem("userLastStoreId")!==""){
+            this.storeIdvalue=sessionStorage.getItem("userLastStoreId")
+          }
+
           this.getStoreById()
           this.init()
         }
       }
     },
     async init () {
+      sessionStorage.setItem("userLastStoreId",this.storeIdvalue)
       const res = await Api.getCategoryPage(String(this.page),String(this.pageSize),String(this.storeIdvalue))
       if (String(res.code)==='1'){
         // console.log(res)

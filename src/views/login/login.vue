@@ -85,6 +85,8 @@ export default {
 
           } else {
             this.$message.error(res.msg)
+            sessionStorage.setItem("userLastStoreId","")
+
             this.loading = false
           }
         }
@@ -102,6 +104,7 @@ export default {
         // localStorage.setItem('token',res.data.token)
         router.push({name:'index'})
       }else {
+        sessionStorage.setItem("userLastStoreId","")
         // this.$message.error(res.msg)
         //此处就不提示token校验失败了，可能第一次本来就没有token
       }
