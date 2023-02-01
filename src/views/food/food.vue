@@ -71,9 +71,9 @@
             <el-image style="width: auto; height: 40px; border:none;cursor: pointer;"
                       :src="row.image"
                       :preview-src-list="[ `${row.image}` ]" >
-              <div slot="error" class="image-slot">
-/*                <img style="width: auto; height: 40px; border:none;" >*/
-              </div>
+<!--              <div slot="error" class="image-slot">-->
+<!--                <img src="https://ts1.cn.mm.bing.net/th/id/R-C.4c3c18991b75be11f57745328f1e041a?rik=1XSjwn2EM3OC2Q&riu=http%3a%2f%2fzidian.shufaai.com%2fuploads%2fzidian%2fxingshu%2f1_0924114U55121.jpg&ehk=4iH7BzeLPsOpeaewJOjWhW54cVLmzw%2faNRBmQA5bhsQ%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1" style="width: auto; height: 40px; border:none;" >-->
+<!--              </div>-->
             </el-image>
           </template>
         </el-table-column>
@@ -567,7 +567,7 @@ export default {
       // })
     },
     getImage (image) {
-      return `/common/download?name=${image}`
+      return image;
     },
     handleQuery() {
       this.page = 1;

@@ -279,9 +279,13 @@
                     <div class="addBut" style="margin-bottom: 20px" @click="openAddDish">+ 添加菜品</div>
                     <div class="table">
                       <el-table :data="dishTable" style="width: 100%">
+                        <el-table-column prop="image" label="图片" width="50">
+                          <template slot-scope="scope">
+                            <el-image :src="scope.row.image"/></template>
+                        </el-table-column>
                         <el-table-column prop="name" label="名称" width="180" align="center"></el-table-column>
                         <el-table-column prop="price" label="原价" width="180">
-                          <template slot-scope="scope"> {{ Number(scope.row.price) / 100 }} </template>
+                          <template slot-scope="scope"> {{ Number(scope.row.price) }} </template>
                         </el-table-column>
                         <el-table-column prop="address" label="份数" align="center">
                           <template slot-scope="scope">
@@ -391,7 +395,7 @@
                         <div class="item">
                           <span style="flex: 3;text-align: left">{{ item.dishName }}</span>
                           <span>{{ item.status == 0 ? '停售' : '在售' }}</span>
-                          <span>{{ Number(item.price)/100 }}</span>
+                          <span>{{ Number(item.price) }}</span>
                         </div>
                       </el-checkbox>
                     </div>
@@ -410,7 +414,7 @@
                     class="item"
                 >
                   <span>{{ item.dishName }}</span>
-                  <span class="price">￥ {{ Number(item.price)/100 }} </span>
+                  <span class="price">￥ {{ Number(item.price) }} </span>
                   <span
                       class="del"
                       @click="delCheck(ind)"
@@ -622,6 +626,7 @@ name: "combo.vue",
           n.copies = 1
           // n.dishCopies = 1
           n.dishName = n.name
+
         })
         this.dishAddList = newArr
       }
@@ -1007,6 +1012,7 @@ name: "combo.vue",
           n.dishId = n.id
           // n.dishCopies = 1
           n.dishName = n.name
+
         })
         this.dishTable = newArr
       }else {
