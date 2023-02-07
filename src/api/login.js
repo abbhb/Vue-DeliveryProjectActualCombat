@@ -210,6 +210,13 @@ export function getSetmealDish(params){
         params
     });
 }
+export function getSetmealFlavor(params){
+    return request({
+        url:'/setmeal/get/flavor',
+        method:'get',
+        params
+    });
+}
 
 export function enableAndDisableStore(userId,storeId,storeStatus){
     return request({

@@ -310,7 +310,95 @@
               </el-form-item>
             </el-form-item>
           </div>
+          <el-form-item label="口味做法配置:">
+            <el-form-item>
+              <div class="flavorBox">
+              <span
+                  v-if="dishFlavors.length == 0"
+                  class="addBut"
+                  @click="addFlavore"
+              > + 添加口味</span>
+                <div
+                    v-if="dishFlavors.length != 0"
+                    class="flavor"
+                >
+                  <div class="title">
+                    <span>口味名（3个字内）</span><span>口味标签（输入标签回车添加）</span>
+                  </div>
+                  <div class="cont">
+                    <div
+                        v-for="(item, index) in dishFlavors"
+                        :key="index"
+                        class="items"
+                    >
+                      <div class="itTit">
+                        <!-- <SelectInput
+                          :dish-flavors-data="dishFlavorsData"
+                          :index="index"
+                          :value="item.name"
+                          @select="selectHandle"
+                        /> -->
+                        <div class="selectInput">
+                          <div>
+                            <el-input
+                                v-model="item.name"
+                                type="text"
+                                style="width: 100%;text-align: center;"
+                                placeholder="请输入口味"
+                                @focus="selectFlavor(true,index)"
+                                @blur="outSelect(false,index)"
+                            />
+                          </div>
+                          <div v-show="item.showOption" class="flavorSelect">
+                            <el-button
+                                type="primary" plain
+                                v-for="(it, ind) in dishFlavorsData"
+                                :key="ind"
+                                class="items"
 
+                                @click="checkOption(it,ind,index)"
+                            >{{ it.name }}
+                            </el-button>
+                            <span
+                                v-if="dishFlavorsData == []"
+                                class="none">无数据
+                              </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                          class="labItems"
+                          style="display: flex"
+                      >
+                      <span
+                          v-for="(it, ind) in item.value"
+                          :key="ind"
+                      >{{ it }} <i @click="delFlavorLabel(index, ind)">X</i></span>
+                        <div
+                            class="inputBox"
+                            :style="inputStyle"
+                            contenteditable="true"
+                            @focus="flavorPosition(index)"
+                            @keydown.enter="(val)=>keyDownHandle(val,index)"
+                        ></div>
+                        <!--                              :style="inputStyle"-->
+                      </div>
+                      <span
+                          class="delFlavor delBut non"
+                          @click="delFlavor(index)"
+                      >删除</span>
+                    </div>
+                  </div>
+                  <div
+                      class="addBut"
+                      @click="addFlavore"
+                  >
+                    添加口味
+                  </div>
+                </div>
+              </div>
+            </el-form-item>
+          </el-form-item>
 
         </el-form>
 
@@ -462,6 +550,10 @@ name: "combo.vue",
       dishCheckedList:[],//已选菜品
       dishTable:[],
       dishCheckList:[],
+      dishFlavorsData: [],
+      inputStyle  : {'flex':1},
+
+      dishFlavors: [],//要传服务器的口味
       counts: 0,
       page: 1,
       pageSize: 10,
@@ -490,6 +582,8 @@ name: "combo.vue",
         code:'',//对应服务端，暂时没搞懂有什么用,
         dishResults:[],//用于传输菜品
         storeId:'',
+        setmealFlavors:[]
+
       },
       dish:{
         dialogVisible: false,
@@ -605,6 +699,8 @@ name: "combo.vue",
       this.classData.sort=''
       this.classData.name=''
       this.classData.image=''
+      this.classData.setmealFlavors = []
+      this.dishFlavors = []
       this.imageUrl = ''
       this.classData.price=''
       this.classData.description=''
@@ -732,6 +828,7 @@ name: "combo.vue",
       //   pageSize: this.pageSize,
       //   name: this.input ? this.input : undefined
       // }
+      this.getFlavorListHand()
       sessionStorage.setItem("userLastStoreId",this.storeIdvalue)
       const res = await Api.getSetmealList(this.page,this.pageSize,this.storeIdvalue,this.input ? this.input : undefined);
       console.log(res)
@@ -923,6 +1020,7 @@ name: "combo.vue",
         this.imageUrl = String(st.image)
         this.classData.version = String(st.version)
         this.getSetmealDish(st.id)
+        this.getSetmealFlavor(st.id)
         // this.getFoodFlavor(st.id)
         this.classData.dialogVisible = true
       }
@@ -935,7 +1033,9 @@ name: "combo.vue",
         console.log(this.dishTable)
         console.log(this.classData)
         console.log(this.dishCheckList)
+        // this.dishFlavors
         this.classData.dishResults = this.dishTable
+        this.classData.setmealFlavors = this.dishFlavors
         // console.log(this.dishFlavors)
         const res = await Api.addSetmeal(this.classData)
         if (String(res.code)==='1'){
@@ -953,6 +1053,7 @@ name: "combo.vue",
           console.log(this.classData)
           console.log(this.dishCheckList)
           this.classData.dishResults = this.dishTable
+          this.classData.setmealFlavors = this.dishFlavors
           // console.log(this.dishFlavors)
           const res = await Api.addSetmeal(this.classData)
           if (String(res.code)==='1'){
@@ -975,6 +1076,7 @@ name: "combo.vue",
           data.price = this.classData.price
           data.sort = this.classData.sort
           data.status = this.classData.status
+          data.setmealFlavors = this.dishFlavors
           data.storeId = this.classData.storeId
           data.version = this.classData.version
           data.code = this.classData.code
@@ -997,10 +1099,96 @@ name: "combo.vue",
       this.classData.dialogVisible = false
       this.cleanform()
     },
+    checkOption(val, ind, index){
+      this.selectHandle(val.name, index, ind)
+      this.dishFlavors[index].name = val.name
+    },
+    addFlavore () {
+      this.dishFlavors.push({'name': '', 'value': [], showOption: false}) // JSON.parse(JSON.stringify(this.dishFlavorsData))
+    },
+    // 按钮 - 删除口味
+    delFlavor (ind) {
+      this.dishFlavors.splice(ind, 1)
+    },
+    // 按钮 - 删除口味标签
+    delFlavorLabel (index, ind) {
+      this.dishFlavors[index].value.splice(ind, 1)
+    },
+    //口味位置记录
+    flavorPosition (index) {
+      this.index = index
+    },
+    // 添加口味标签
+    keyDownHandle (val,index) {
+      console.log('keyDownHandle----val',val)
+      console.log('keyDownHandle----index',index)
+      console.log('keyDownHandle----this.dishFlavors',this.dishFlavors)
+      if (event) {
+        event.cancelBubble = true
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      if (val.target.innerText.trim() != '') {
+        this.dishFlavors[index].value.push(val.target.innerText)
+        val.target.innerText = ''
+      }
+    },
+    // 获取口味列表
+    getFlavorListHand () {
+      // flavor flavorData
+      this.dishFlavorsData = [
+        {'name':'甜味','value':['无糖','少糖','半糖','多糖','全糖']},
+        {'name':'温度','value':['热饮','常温','去冰','少冰','多冰']},
+        {'name':'忌口','value':['不要葱','不要蒜','不要香菜','不要辣']},
+        {'name':'辣度','value':['不辣','微辣','中辣','重辣']}
+      ]
+    },
+    selectFlavor(st,index){
+      console.log('st',st)
+      console.log('index',index)
+      console.log('this.dishFlavors',this.dishFlavors)
+      const obj = JSON.parse(JSON.stringify(this.dishFlavors[index]))
+      obj.showOption = st
+      this.dishFlavors.splice(index,1,obj)
+      // this.dishFlavors[index].showOption = st
+    },
+    selectHandle(val, key, ind){
+      const arrDate = [...this.dishFlavors]
+      arrDate[key] = JSON.parse(JSON.stringify(this.dishFlavorsData[ind]))
+      this.dishFlavors = arrDate
+    },
+    outSelect(st,index){
+      const _this = this
+      setTimeout(()=> {
+        const obj = JSON.parse(JSON.stringify(_this.dishFlavors[index]))
+        obj.showOption = st
+        _this.dishFlavors.splice(index,1,obj)
+      }, 200)
+    },
     // 删除套餐菜品
     delDishHandle(index) {
       this.dishTable.splice(index, 1)
       this.dishCheckList.splice(index, 1)
+    },
+    async getSetmealFlavor(id) {
+      let params = {}
+      params.id = String(id)
+      const res = await Api.getSetmealFlavor(params)
+      if (String(res.code)==='1'){
+        this.dishFlavors = res.data
+        console.log(res.data.length)
+        for (var i=0;i<res.data.length;i++){
+
+          var str = res.data[i].value
+          console.log("0:"+str)
+          str = str.replace(/\[|]/g,'')
+          console.log("1:"+str)
+          this.dishFlavors[i].value = str.split(", ")
+          console.log("2:"+this.dishFlavors[i].value)
+        }
+
+        // this.dishFlavors.value = JSON.parse(res.data.value)
+      }
     },
     async getSetmealDish(id) {
       let params = {}
