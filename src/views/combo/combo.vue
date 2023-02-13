@@ -314,12 +314,12 @@
             <el-form-item>
               <div class="flavorBox">
               <span
-                  v-if="dishFlavors.length == 0"
+                  v-if="setmealFlavors.length == 0"
                   class="addBut"
                   @click="addFlavore"
               > + 添加口味</span>
                 <div
-                    v-if="dishFlavors.length != 0"
+                    v-if="setmealFlavors.length != 0"
                     class="flavor"
                 >
                   <div class="title">
@@ -327,13 +327,13 @@
                   </div>
                   <div class="cont">
                     <div
-                        v-for="(item, index) in dishFlavors"
+                        v-for="(item, index) in setmealFlavors"
                         :key="index"
                         class="items"
                     >
                       <div class="itTit">
                         <!-- <SelectInput
-                          :dish-flavors-data="dishFlavorsData"
+                          :dish-flavors-data="setmealFlavorsData"
                           :index="index"
                           :value="item.name"
                           @select="selectHandle"
@@ -352,7 +352,7 @@
                           <div v-show="item.showOption" class="flavorSelect">
                             <el-button
                                 type="primary" plain
-                                v-for="(it, ind) in dishFlavorsData"
+                                v-for="(it, ind) in setmealFlavorsData"
                                 :key="ind"
                                 class="items"
 
@@ -360,7 +360,7 @@
                             >{{ it.name }}
                             </el-button>
                             <span
-                                v-if="dishFlavorsData == []"
+                                v-if="setmealFlavorsData == []"
                                 class="none">无数据
                               </span>
                           </div>
@@ -550,10 +550,9 @@ name: "combo.vue",
       dishCheckedList:[],//已选菜品
       dishTable:[],
       dishCheckList:[],
-      dishFlavorsData: [],
+      setmealFlavorsData: [],
       inputStyle  : {'flex':1},
-
-      dishFlavors: [],//要传服务器的口味
+      setmealFlavors: [],//要传服务器的口味
       counts: 0,
       page: 1,
       pageSize: 10,
@@ -700,7 +699,7 @@ name: "combo.vue",
       this.classData.name=''
       this.classData.image=''
       this.classData.setmealFlavors = []
-      this.dishFlavors = []
+      this.setmealFlavors = []
       this.imageUrl = ''
       this.classData.price=''
       this.classData.description=''
@@ -1033,10 +1032,10 @@ name: "combo.vue",
         console.log(this.dishTable)
         console.log(this.classData)
         console.log(this.dishCheckList)
-        // this.dishFlavors
+        // this.setmealFlavors
         this.classData.dishResults = this.dishTable
-        this.classData.setmealFlavors = this.dishFlavors
-        // console.log(this.dishFlavors)
+        this.classData.setmealFlavors = this.setmealFlavors
+        // console.log(this.setmealFlavors)
         const res = await Api.addSetmeal(this.classData)
         if (String(res.code)==='1'){
           console.log(res)
@@ -1053,8 +1052,8 @@ name: "combo.vue",
           console.log(this.classData)
           console.log(this.dishCheckList)
           this.classData.dishResults = this.dishTable
-          this.classData.setmealFlavors = this.dishFlavors
-          // console.log(this.dishFlavors)
+          this.classData.setmealFlavors = this.setmealFlavors
+          // console.log(this.setmealFlavors)
           const res = await Api.addSetmeal(this.classData)
           if (String(res.code)==='1'){
             console.log(res)
@@ -1076,7 +1075,7 @@ name: "combo.vue",
           data.price = this.classData.price
           data.sort = this.classData.sort
           data.status = this.classData.status
-          data.setmealFlavors = this.dishFlavors
+          data.setmealFlavors = this.setmealFlavors
           data.storeId = this.classData.storeId
           data.version = this.classData.version
           data.code = this.classData.code
@@ -1101,18 +1100,18 @@ name: "combo.vue",
     },
     checkOption(val, ind, index){
       this.selectHandle(val.name, index, ind)
-      this.dishFlavors[index].name = val.name
+      this.setmealFlavors[index].name = val.name
     },
     addFlavore () {
-      this.dishFlavors.push({'name': '', 'value': [], showOption: false}) // JSON.parse(JSON.stringify(this.dishFlavorsData))
+      this.setmealFlavors.push({'name': '', 'value': [], showOption: false}) // JSON.parse(JSON.stringify(this.setmealFlavorsData))
     },
     // 按钮 - 删除口味
     delFlavor (ind) {
-      this.dishFlavors.splice(ind, 1)
+      this.setmealFlavors.splice(ind, 1)
     },
     // 按钮 - 删除口味标签
     delFlavorLabel (index, ind) {
-      this.dishFlavors[index].value.splice(ind, 1)
+      this.setmealFlavors[index].value.splice(ind, 1)
     },
     //口味位置记录
     flavorPosition (index) {
@@ -1122,21 +1121,21 @@ name: "combo.vue",
     keyDownHandle (val,index) {
       console.log('keyDownHandle----val',val)
       console.log('keyDownHandle----index',index)
-      console.log('keyDownHandle----this.dishFlavors',this.dishFlavors)
+      console.log('keyDownHandle----this.setmealFlavors',this.setmealFlavors)
       if (event) {
         event.cancelBubble = true
         event.preventDefault()
         event.stopPropagation()
       }
       if (val.target.innerText.trim() != '') {
-        this.dishFlavors[index].value.push(val.target.innerText)
+        this.setmealFlavors[index].value.push(val.target.innerText)
         val.target.innerText = ''
       }
     },
     // 获取口味列表
     getFlavorListHand () {
       // flavor flavorData
-      this.dishFlavorsData = [
+      this.setmealFlavorsData = [
         {'name':'甜味','value':['无糖','少糖','半糖','多糖','全糖']},
         {'name':'温度','value':['热饮','常温','去冰','少冰','多冰']},
         {'name':'忌口','value':['不要葱','不要蒜','不要香菜','不要辣']},
@@ -1146,23 +1145,23 @@ name: "combo.vue",
     selectFlavor(st,index){
       console.log('st',st)
       console.log('index',index)
-      console.log('this.dishFlavors',this.dishFlavors)
-      const obj = JSON.parse(JSON.stringify(this.dishFlavors[index]))
+      console.log('this.setmealFlavors',this.setmealFlavors)
+      const obj = JSON.parse(JSON.stringify(this.setmealFlavors[index]))
       obj.showOption = st
-      this.dishFlavors.splice(index,1,obj)
-      // this.dishFlavors[index].showOption = st
+      this.setmealFlavors.splice(index,1,obj)
+      // this.setmealFlavors[index].showOption = st
     },
     selectHandle(val, key, ind){
-      const arrDate = [...this.dishFlavors]
-      arrDate[key] = JSON.parse(JSON.stringify(this.dishFlavorsData[ind]))
-      this.dishFlavors = arrDate
+      const arrDate = [...this.setmealFlavors]
+      arrDate[key] = JSON.parse(JSON.stringify(this.setmealFlavorsData[ind]))
+      this.setmealFlavors = arrDate
     },
     outSelect(st,index){
       const _this = this
       setTimeout(()=> {
-        const obj = JSON.parse(JSON.stringify(_this.dishFlavors[index]))
+        const obj = JSON.parse(JSON.stringify(_this.setmealFlavors[index]))
         obj.showOption = st
-        _this.dishFlavors.splice(index,1,obj)
+        _this.setmealFlavors.splice(index,1,obj)
       }, 200)
     },
     // 删除套餐菜品
@@ -1175,7 +1174,7 @@ name: "combo.vue",
       params.id = String(id)
       const res = await Api.getSetmealFlavor(params)
       if (String(res.code)==='1'){
-        this.dishFlavors = res.data
+        this.setmealFlavors = res.data
         console.log(res.data.length)
         for (var i=0;i<res.data.length;i++){
 
@@ -1183,11 +1182,11 @@ name: "combo.vue",
           console.log("0:"+str)
           str = str.replace(/\[|]/g,'')
           console.log("1:"+str)
-          this.dishFlavors[i].value = str.split(", ")
-          console.log("2:"+this.dishFlavors[i].value)
+          this.setmealFlavors[i].value = str.split(", ")
+          console.log("2:"+this.setmealFlavors[i].value)
         }
 
-        // this.dishFlavors.value = JSON.parse(res.data.value)
+        // this.setmealFlavors.value = JSON.parse(res.data.value)
       }
     },
     async getSetmealDish(id) {
@@ -1200,7 +1199,7 @@ name: "combo.vue",
           n.dishId = n.id
           // n.dishCopies = 1
           n.dishName = n.name
-
+          //image
         })
         this.dishTable = newArr
       }else {
