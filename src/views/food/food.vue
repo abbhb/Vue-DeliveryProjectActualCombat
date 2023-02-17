@@ -695,7 +695,21 @@ export default {
       this.dishFlavors[index].name = val.name
     },
     addFlavore () {
-      this.dishFlavors.push({'name': '', 'value': [], showOption: false}) // JSON.parse(JSON.stringify(this.dishFlavorsData))
+      if (this.dishFlavors.length>=3){
+        this.$prompt('不建议口味数超过3(为了用户端体验),若您仍要继续请输入[继续]', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(({ value }) => {
+          if (value==='继续'){
+            this.dishFlavors.push({'name': '', 'value': [], showOption: false}) // JSON.parse(JSON.stringify(this.dishFlavorsData))
+          }
+        }).catch(() => {
+
+        });
+      }else {
+        this.dishFlavors.push({'name': '', 'value': [], showOption: false}) // JSON.parse(JSON.stringify(this.dishFlavorsData))
+      }
+
     },
     // 按钮 - 删除口味
     delFlavor (ind) {

@@ -127,7 +127,7 @@ export default [
 	},
 	{
 		path: '*',
-		name: '*',
+		name: '404NotFound',
 		redirect: '/404',
 		meta:{
 			requireAuth: false,

@@ -81,7 +81,20 @@ export default {
             localStorage.setItem("type",res.data.permissions)
             localStorage.setItem('userid',String(res.data.id))
             localStorage.setItem('token',res.data.token)
-            router.push({name:'index'})
+            if (String(res.data.permissions)==='1'){
+              router.push({name:'index'})
+            }else if (String(res.data.permissions)==='2'){
+              router.push({name:'index'})
+            } else {
+              if (String(res.data.storeId)==='null'){
+
+                router.push({name:'404NotFound'})
+              }else {
+                router.push({name:'index'})
+              }
+            }
+
+
 
           } else {
             this.$message.error(res.msg)
@@ -102,7 +115,16 @@ export default {
         localStorage.setItem('userInfo',JSON.stringify(res.data))
         localStorage.setItem('userid',String(res.data.id))
         // localStorage.setItem('token',res.data.token)
-        router.push({name:'index'})
+        if (String(res.data.permissions)==='1'||String(res.data.permissions)==='2'){
+          router.push({name:'index'})
+        }else {
+          if (String(res.data.storeId)==='null'){
+
+            router.push({name:'404NotFound'})
+          }else {
+            router.push({name:'index'})
+          }
+        }
       }else {
         sessionStorage.setItem("userLastStoreId","")
         // this.$message.error(res.msg)
