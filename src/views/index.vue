@@ -171,7 +171,7 @@ export default {
             {
               optionName: '订单明细',
               index: '2-6',
-              routerName: "test3",
+              routerName: "orders",
               iconClassName: "el-icon-s-order"
             }
           ]

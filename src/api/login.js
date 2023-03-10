@@ -56,16 +56,17 @@ export function checkToken(){
 //         }
 //     });
 // }
-// export function pageList(pageNum,pageSize){
-//     return request({
-//         url:'/employee/page',
-//         method:'get',
-//         params:{
-//             pageNum:pageNum,
-//             pageSize:pageSize
-//         }
-//     });
-// }
+export function listForAdmin(pageNum,pageSize,storeId){
+    return request({
+        url:'/order/listForAdmin',
+        method:'get',
+        params:{
+            pageNum:pageNum,
+            pageSize:pageSize,
+            storeId:storeId,
+        }
+    });
+}
 export function updataforuser(id,username,name,sex,idNumber,phone){
     return request({
         url:'/employee/updataforuser',

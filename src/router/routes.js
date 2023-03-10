@@ -9,6 +9,7 @@ import memberguanli from "@/views/member/memberguanli";
 import category from "@/views/category/category";
 import food from "@/views/food/food";
 import combo from "@/views/combo/combo";
+import orders from "@/views/orders/orders.vue";
 export default [
 	{
 		path: '/',
@@ -117,6 +118,16 @@ export default [
 				path: '/combo',
 				name: 'combo',
 				component: combo,
+				meta:{
+					requireAuth: true,
+					needrole:true,
+					roles:[1,2,3]
+				}
+			},
+			{
+				path: '/orders',
+				name: 'orders',
+				component: orders,
 				meta:{
 					requireAuth: true,
 					needrole:true,
