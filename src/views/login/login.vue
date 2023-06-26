@@ -6,7 +6,7 @@
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" >
           <div class="login-form-title">
 <!--            <img src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" style="width:139px;height:42px;" alt="" />-->
-                <span>瑞吉外卖</span>
+                <span>N外卖</span>
           </div>
           <el-form-item prop="username">
             <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号" maxlength="20"

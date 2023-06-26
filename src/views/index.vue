@@ -2,7 +2,7 @@
   <div class="home">
     <header class="header">
       <div class="left">
-        瑞吉外卖管理后台
+        N外卖管理后台
         <el-button
             @click="onMenuCollapse"
             circle
